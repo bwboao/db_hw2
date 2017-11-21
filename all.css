@@ -39,6 +39,9 @@ p.notice{
   font-family:sans-serif;
 }
 
+p.margin{
+  margin: 5px;
+}
 /*Tables and td,th*/
 
 table{
@@ -134,14 +137,14 @@ div#personinfo{
   top:25vh;
   right:0;
   max-width:15em;
-  max-height:10em;
+  max-height:17.5em;
   background-color:rgba(186,229,178,1);
   border-radius:0.5em;
   box-shadow: 4px 4px 16px rgba(0,0,0,0.5);
 }
 div#table {
-  max-width:35em;
-  min-width:30em;
+  max-width:50em;
+  min-width:20em;
   margin:auto;
   margin-top:1em;
   hello world;

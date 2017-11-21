@@ -138,10 +138,10 @@
           $sql_find_account="UPDATE people SET is_admin=$new_is_admin WHERE account='$account'";
           $rs=$db->prepare($sql_find_account);
           $rs->execute();
-          print_p_with_div("notice", "Already upgrade", 1, "admin.php");
+          print_p_with_div("notice", "Upgrade sucess", 1, "admin_user.php");
         }
         else{
-          print_p_with_div("alert", "Can't change this account by itself", 5, "admin.php");
+          print_p_with_div("alert", "Can't change this account by itself", 5, "admin_user.php");
         }
       }
 //change part end
@@ -151,10 +151,10 @@
       $this_rs->execute();
       $table = $this_rs->fetch();
 ?>
-      <div id="welcome"><h1>Welcome to the Adim page!</h1></div>
-<!-- Personinfo part START-->
+      <div id="welcome"><h1>Welcome to the user manage page!</h1></div>
       <div id="personinfo">
         <p>Hello, <?php echo "$table[0]"; ?> ! </p>
+
         <table>
           <tbody>
             <tr>
@@ -170,58 +170,45 @@
             </tr>
           </tbody>
         </table>
-        <p class="margin">
-          <input type="submit" onclick="location.href='admin_house.php'" value="房屋管理"></input>
+
+         <p class="margin">
+          <input type="submit" onclick="location.href='admin.php'" value="首頁"></input>
         </p>
-        <p class="margin">
-          <input type="submit" onclick="location.href='admin_user.php'" value="會員管理"></input>
-        </p>
-        <p class="margin">
+         <p>
           <input type="button" onclick="location.href='logout.php'" value="logout"></input>
         </p>
       </div>
-<!-- Personinfo part END-->
-<!-- Search part START-->
 <?php
-      $sql_find_all = "SELECT *,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN information AS info ON house.id = info.house_id" ;
+      $sql_find_all = "SELECT * FROM people";
       //$people_rs = $db->query($sql_find_all);
       $people_rs = $db->prepare($sql_find_all);
       $people_rs->execute();
 ?>
-
-<!-- Search part END-->
-<!-- Table part START-->
       <div id="table">
         <table>
-          <h3>All houses</h3>
+          <h3>All users</h3>
           <tr>
-            <th>id</th>
+            <th>user</th>
             <th>name</th>
-            <th>price</th>
-            <th>location</th>
-            <th>time</th>
-            <th>owner</th>
-            <th>information</th>
-            <th>option</th>
+            <th>email</th>
+            <th>admin</th>
+            <th>adjust</th>
           </tr>
 <?php
       while($table = $people_rs->fetchObject()){
 ?>
           <tr>
-	    <td><?php echo $table->id; ?></td>
-            <td><?php echo $table->hname; ?></td>
-            <td><?php echo $table->price; ?></td>
-            <td><?php echo $table->location; ?></td>
-            <td><?php echo $table->time; ?></td>
-            <td><?php echo $table->owner; ?></td>
-            <td><?php echo $table->information; ?></td>
+	          <td><?php echo $table->account; ?></td>
+            <td><?php echo $table->name; ?></td>
+            <td><?php echo $table->email; ?></td>
+	          <td class="adminis<?php echo $table->is_admin; ?>" > <?php if ($table->is_admin == 1) echo 'O' ?></td>
             <td class="adjust">
-              <form method="post" action="admin.php">
-              <input type="hidden" name="button_delete_account" value="<?php echo $table->account; ?>"><input class="adjust" value="delete" type="submit">
-              </form>
-              <form method="post" action="admin.php">
-              <input type="hidden" name="button_change_account" value="<?php echo $table->account; ?>"><input class="adjust" value="change" type="submit">
-              </form>
+            <form method="post" action="admin_user.php">
+            <input type="hidden" name="button_delete_account" value="<?php echo $table->account; ?>"><input class="adjust" value="delete" type="submit">
+            </form>
+            <form method="post" action="admin_user.php">
+            <input type="hidden" name="button_change_account" value="<?php echo $table->account; ?>"><input class="adjust" value="change" type="submit">
+            </form>
             </td>
           </tr>
 <?php
@@ -229,12 +216,12 @@
 ?>
         </table>
       </div>
-<!-- Table part END -->
-      <!--div id="create">
+
+      <div id="create">
         <h3>Create</h3>
         <p>Create user or administrator</p>
 
-        <form name="update_or_build" method="post" action="admin.php">
+        <form name="update_or_build" method="post" action="admin_user.php">
         <table class="noshadow">
           <tbody>
             <tr>
@@ -268,7 +255,7 @@
           <input name="button_to_submit" type="submit" value="create">
         </p>
         </form>
-      </div-->
+      </div>
 
 <?php
     }
