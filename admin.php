@@ -115,7 +115,7 @@
           print_p_with_div("notice", "already delete", 1, "admin.php");
         }
         else{
-          print_p_with_div_p("alert", "Can't delete this account by itself.", 0.5, "admin.php");
+          print_p_with_div("alert", "Can't delete this account by itself.", 0.5, "admin.php");
         }
       }
 //delete part end
