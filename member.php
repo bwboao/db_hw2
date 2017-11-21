@@ -2,11 +2,9 @@
 
 <?php
   include("connect_database.php");
-    
-  if(isset($_SESSION['login_account'])){
-    unset($_SESSION['login_account']);
-  }
-
+  include("_form.php");
+  
+  unset_session('login_account');
 
   if(isset($_SESSION['account'])){
     $my_account = $_SESSION['account'];
@@ -45,22 +43,10 @@
 <?php
     }
     else{
-?>
-      <div class="transport">
-        <p class="alert">This account is admin, you DON'T belong here</p>
-        <meta http-equiv=REFRESH CONTENT=2;url=admin.php>
-      </div>
-<?php
+      print_p_with_div("alert", "This account is admin, you DON'T belong here", 2, "admin.php");
     }
   }
   else{
-?>
-    <div class="transport">
-      <p class="alert">Please login !</p>
-      <meta http-equiv=REFRESH CONTENT=2;url=index.php>
-    </div>
-<?php
+   print_p_with_div("alert", "Please login!", 2, "index.php");
   }
 ?>
-<link rel="stylesheet" href="all.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
