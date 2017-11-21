@@ -65,7 +65,7 @@
 
 <body>
   <div>
-    <h1>Welcome to HW1</h1>
+    <h1>Welcome to HW2</h1>
   </div>
   <div id="index" >  
     <h1>Login</h1>
