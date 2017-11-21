@@ -2,25 +2,17 @@
 
 <?php
   include("connect_database.php");
-  if(isset($_SESSION['regist_account'])){
-    unset($_SESSION['regist_account']);
-  }
-  if(isset($_SESSION['regist_name'])){
-    unset($_SESSION['regist_name']);
-  }
-  if(isset($_SESSION['regist_name'])){
-    unset($_SESSION['regist_name']);
-  }
+  include("_form.php");
+  
+  unset_session('regist_account');
+  unset_session('regist_name');
 
   if(isset($_POST['account'])){
-    $_SESSION['login_account']=$_POST['account'];
+    store_post_as_session('login_account', 'account');
     $account=$_POST['account'];//for sql
     $password=$_POST['password'];
     $hash_password=hash('sha256', $password);
-    $sql_find_account = "SELECT * FROM people WHERE account='$account'";
-    $people_rs = $db->prepare($sql_find_account);
-    $people_rs->execute();
-    $table = $people_rs->fetch();
+    $table = find_who_login($db, $account);
 
     $needto_output = array();
     $needto_reinput = 0;
@@ -43,13 +35,10 @@
     }
      
     if($needto_reinput == 1){
-      ?><div class="transport">
-      <p class="notice">Login failed</p><?php
-      foreach($needto_output as $key => $value){
-        ?><p class="alert" style="text-align:start">><?php echo "$value"; ?></p><?php
-      }
-      ?></div>
-      <meta http-equiv=REFRESH CONTENT=2;url=index.php><?php
+      $needto_output_with_header = array();
+      array_push($needto_output_with_header, "Login failed");
+      array_push($needto_output_with_header, $needto_output);
+      print_p_with_div("alert", $needto_output_with_header, 2, "index.php");
       unset($needto_output);
     }
     else{
@@ -63,12 +52,7 @@
       else{
         $who = "admin";
       }
-?>
-      <div class="transport">
-        <p class="notice"><?php echo "$who"; ?> login successed</p>
-        <meta http-equiv=REFRESH CONTENT=1;url=<?php echo "$who" ?>.php>
-      </div>
-<?php
+      print_p_with_div("alert", "$who login successed", 1, "$who.php");
     }
   }
 ?>
