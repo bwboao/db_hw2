@@ -2,24 +2,12 @@
 
 <?php
   include("connect_database.php");
-  if(isset($_SESSION['login_account'])){
-    unset($_SESSION['login_account']);
-  }
-  if(isset($_SESSION['login_account'])){
-    unset($_SESSION['login_account']);
-  }
-  if(isset($_SESSION['login_account'])){
-    unset($_SESSION['login_account']);
-  }
-
+  include("_form.php");
+  unset_session('login_account');
+  
   if(isset($_SESSION['account'])){//check is_admin
     if(isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != 1){
-?>
-      <div class="transport">
-        <p class="alert">Permission denied, only administrator can use this page</p>
-        <meta http-equiv=REFRESH CONTENT=2;url=member.php>
-      </div>
-<?php
+      print_p_with_div("alert", "Pemission denied, only administrator can use this page.", 2, "member.php");
     }
     else{
 //regist part start
@@ -30,10 +18,14 @@
         $name=$_POST['name'];
         $email=$_POST['email'];
         $is_admin=$_POST['is_admin'];
-        $_SESSION['regist_account']=$_POST['account'];//for reinput's value
+        store_post_as_session('regist_account', 'account');
+        store_post_as_session('regist_is_admin', 'is_admin');
+        store_post_as_session('regist_name', 'name');
+        store_post_as_session('regist_email', 'email');
+        /*$_SESSION['regist_account']=$_POST['account'];//for reinput's value
         $_SESSION['regist_is_admin']=$_POST['is_admin'];
         $_SESSION['regist_name']=$_POST['name'];
-        $_SESSION['regist_email']=$_POST['email'];
+        $_SESSION['regist_email']=$_POST['email'];*/
 
         $needto_reinput = 0;
 
@@ -116,24 +108,14 @@
         $_SESSION['button_delete_account']=$_POST['button_delete_account'];
         if($_POST['button_delete_account'] != $_SESSION['account']){
           $account=$_POST['button_delete_account'];
-          unset($_SESSION['button_delete_account']);
+          unset_session('button_delete_account');
           $sql="DELETE FROM people WHERE account='$account'";
           $rs=$db->prepare($sql);
           $rs->execute();
-?>
-          <div class="transport">
-            <p class="notice">already delete</p>
-            <meta http-equiv=REFRESH CONTENT=1;url=admin.php>
-          </div>
-<?php
+          print_p_with_div("notice", "already delete", 1, "admin.php");
         }
         else{
-?>
-          <div class="transport">
-            <p class="alert">can't delete this account by itself</p>
-            <meta http-equiv=REFRESH CONTENT=0.5;url=admin.php>
-          </div>
-<?php
+          print_p_with_div_p("alert", "Can't delete this account by itself.", 0.5, "admin.php");
         }
       }
 //delete part end
@@ -156,20 +138,10 @@
           $sql_find_account="UPDATE people SET is_admin=$new_is_admin WHERE account='$account'";
           $rs=$db->prepare($sql_find_account);
           $rs->execute();
-?>
-          <div class="transport">
-            <p class="notice">already upgrade</p>
-            <meta http-equiv=REFRESH CONTENT=1;url=admin.php>
-          </div>
-<?php
+          print_p_with_div("notice", "Already upgrade", 1, "admin.php");
         }
         else{
-?>
-          <div class="transport">
-            <p class="alert">can't change this account by itself</p>
-            <meta http-equiv=REFRESH CONTENT=0.5;url=admin.php>
-          </div>
-<?php
+          print_p_with_div("alert", "Can't change this account by itself", 5, "admin.php");
         }
       }
 //change part end
@@ -286,13 +258,6 @@
     }
   }
   else{
-?>
-    <div class="transport">
-      <p class="alert">Please login!</p>
-      <meta http-equiv=REFRESH CONTENT=2;url=index.php>
-    </div>
-<?php
+    print_p_with_div("alert", "please login", 2, "index.php");
   }
 ?>
-<link rel="stylesheet" href="all.css">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
