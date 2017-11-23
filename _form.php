@@ -24,6 +24,11 @@
     $table = $rs->fetch();
     return $table;
   }
+  function print_session($session_name){
+    if(isset($_SESSION[$session_name])){
+      echo $_SESSION[$session_name];
+    }
+  }
 
   function insert_account($db, $account, $hash_password, $is_admin, $name, $email){ 
     $sql_insert_account="INSERT INTO people (account, password, is_admin, name, email) VALUES (:account, :hash_password, :is_admin, :name, :email)";

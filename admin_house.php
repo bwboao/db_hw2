@@ -158,7 +158,7 @@
 <!-- Search part START-->
 <?php
       $user_id = $table[5] ;
-      $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN information AS info ON house.id = info.house_id WHERE owner_id = $user_id";
+      $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id WHERE owner_id = $user_id";
       //$people_rs = $db->query($sql_find_all);
       $people_rs = $db->prepare($sql_find_all);
       $people_rs->execute();
@@ -171,7 +171,8 @@
           <h3>Your houses</h3>
           <tr><td class="adjust">
             <form method="post" action="admin_house.php">
-            <input type="hidden" name="button_new_house" value="<?php echo $table->account; ?>"><input class="adjust" value="新增" type="submit">
+            <input type="hidden" name="button_new_house" value="<?php echo $user_id; ?>">
+            <input class="adjust" value="新增" type="submit">
             </form>
 <?php
       $table = $people_rs->fetchObject();
@@ -202,7 +203,16 @@
             <td><?php echo $table->location; ?></td>
             <td><?php echo $table->time; ?></td>
             <td><?php echo $table->owner; ?></td>
-            <td><?php echo $table->information; ?></td>
+            <td>
+<?php
+        $sql_find_info = "SELECT * FROM information AS info WHERE info.house_id= $table->hid " ;
+        $info_rs = $db->query($sql_find_info);
+        while($info = $info_rs->fetchObject()){
+          echo "<p> $info->information </p>" ;
+        }
+
+?>
+            </td>
             <td class="adjust">
               <form method="post" action="admin_house.php">
                 <input type="hidden" name="button_delete_house" value="<?php echo $table->account; ?>">
@@ -225,7 +235,16 @@
             <td><?php echo $table->location; ?></td>
             <td><?php echo $table->time; ?></td>
             <td><?php echo $table->owner; ?></td>
-            <td><?php echo $table->information; ?></td>
+            <td>
+<?php
+        $sql_find_info = "SELECT * FROM information AS info WHERE info.house_id= $table->hid " ;
+        $info_rs = $db->query($sql_find_info);
+        while($info = $info_rs->fetchObject()){
+          echo "<p> $info->information </p>" ;
+        }
+
+?>
+            </td>
             <td class="adjust">
               <form method="post" action="admin_house.php">
                 <input type="hidden" name="button_delete_house" value="<?php echo $table->hid; ?>">

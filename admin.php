@@ -30,11 +30,10 @@
           $user_id = $table[5];
           
           $house_id = $_POST['button_favorite_house'];
-          echo $user_id, $house_id;
           $sql_fav_house="INSERT INTO favorite ( id , user_id , favorite_id ) VALUES ( NULL , $user_id , $house_id )";
           $rs=$db->prepare($sql_fav_house);
           $rs->execute();
-          print_p_with_div("notice", "Already upgrade", 1, "admin.php");
+          print_p_with_div("notice", "Favorited <3", 1, "admin.php");
       }
 //favorite part end
 
@@ -77,7 +76,8 @@
 <!-- Personinfo part END-->
 <!-- Search part START-->
 <?php
-      $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN information AS info ON house.id = info.house_id" ;
+      $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id " ;
+      //$sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN information AS info ON house.id = info.house_id" ;
       //$people_rs = $db->query($sql_find_all);
       $people_rs = $db->prepare($sql_find_all);
       $people_rs->execute();
@@ -87,7 +87,20 @@
 <!-- Table part START-->
       <div id="table">
         <table>
+          <tbody>
+            <tr>
+              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
+              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
+              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
+              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
+              <td class="adjust"><input class="search" name="" type="date" placeholder="date"></td>
+              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
+              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
+              <td class="adjust"><input name="" type="submit" value="search"</td>
+            </tr>
+          </tbody>
           <h3>All houses</h3>
+          <tbody>
           <tr>
             <th>id</th>
             <th>name</th>
@@ -108,8 +121,17 @@
             <td><?php echo $table->location; ?></td>
             <td><?php echo $table->time; ?></td>
             <td><?php echo $table->owner; ?></td>
-            <td><?php echo $table->information; ?></td>
-            <td class="adjust">
+            <td>
+<?php
+        $sql_find_info = "SELECT * FROM information AS info WHERE info.house_id= $table->hid " ;
+        $info_rs = $db->query($sql_find_info);
+        while($info = $info_rs->fetchObject()){
+          echo "<p> $info->information </p>" ;
+        }
+
+?>
+            </td>
+           <td class="adjust">
               <form method="post" action="admin.php">
                 <input type="hidden" name="button_favorite_house" value="<?php echo $table->hid; ?>">
                 <input class="adjust" value="favorite" type="submit">
@@ -123,6 +145,7 @@
 <?php
       }
 ?>
+        </tbody>
         </table>
       </div>
 <!-- Table part END -->
