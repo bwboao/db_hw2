@@ -12,7 +12,7 @@
     $account=$_POST['account'];//for sql
     $password=$_POST['password'];
     $hash_password=hash('sha256', $password);
-    $table = find_who_login($db, $account);
+    $table_who_login = find_account($db, $account);
 
     $needto_output = array();
     $needto_reinput = 0;
@@ -25,11 +25,11 @@
       array_push($needto_output, "password can't be null");
       $needto_reinput = 1;
     }
-    if($_SESSION['login_account'] != $table[0]){
+    if($_SESSION['login_account'] != $table_who_login[0]){
       array_push($needto_output, "account doesn't be exist");
       $needto_reinput = 1;
     }
-    if($hash_password != $table[1]){
+    if($hash_password != $table_who_login[1]){
       array_push($needto_output, "password isn't correct");
       $needto_reinput = 1;
     }
@@ -43,10 +43,10 @@
     }
     else{
       $_SESSION['account'] = $account;
-      $_SESSION['is_admin'] = $table[2];
+      $_SESSION['is_admin'] = $table_who_login[2];
       unset($_SESSION['login_account']);
 
-      if($table[2] == 0){
+      if($table_who_login[2] == 0){
         $who = "member";
       }
       else{
@@ -58,7 +58,6 @@
 ?>
 <html>
 <head>
-  <link rel="stylesheet" href="all.css" >
   <title>need_to_login</title>
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
@@ -74,7 +73,9 @@
       <table id="login" class="noshadow">
       <tr>
         <td>account</td>
-        <td><input name="account" type="text" value="<?php if(isset($_SESSION['login_account'])){echo $_SESSION['login_account'];}; ?>"></td>
+        <td>
+          <input name="account" type="text" value="<?php print_session('login_account'); ?>">
+        </td>
       </tr>
       <tr>
         <td>password</td>
@@ -90,6 +91,5 @@
   </div>
 </body>
 </html>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 

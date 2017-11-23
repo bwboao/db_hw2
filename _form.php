@@ -2,6 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <?php
+  include("connect_database.php");
   if(session_status() == PHP_SESSION_NONE){
     session_start();
   }
@@ -16,12 +17,17 @@
     $_SESSION[$session_name] = $_POST[$post_name];
   }
       
-  function find_who_login($db, $account){
+  function find_account($db, $account){
     $sql_find_account = "SELECT * FROM people WHERE account=:account";
     $people_rs = $db->prepare($sql_find_account);
     $people_rs->execute(array('account' => $account));
     $table = $people_rs->fetch();
     return $table;
+  }
+  function print_session($session_name){
+    if(isset($_SESSION[$session_name])){
+      echo $_SESSION[$session_name];
+    }
   }
 
   function print_p($class_p, $content){
