@@ -104,46 +104,19 @@
 //regist part end
 
 //delete part start
-      if(isset($_POST['button_delete_account'])){//delete part start
-        $_SESSION['button_delete_account']=$_POST['button_delete_account'];
-        if($_POST['button_delete_account'] != $_SESSION['account']){
-          $account=$_POST['button_delete_account'];
-          unset_session('button_delete_account');
-          $sql="DELETE FROM people WHERE account='$account'";
+      if(isset($_POST['button_delete_house'])){
+        $_SESSION['button_delete_house']=$_POST['button_delete_house'];
+          $houseid=$_POST['button_delete_house'];
+          unset_session('button_delete_house');
+          $sql="DELETE FROM  house WHERE id='$houseid';DELETE FROM favorite WHERE house_id = '$houseid'";
           $rs=$db->prepare($sql);
           $rs->execute();
           print_p_with_div("notice", "already delete", 1, "admin_house.php");
-        }
-        else{
-          print_p_with_div("alert", "Can't delete this account by itself.", 0.5, "admin_house.php");
-        }
       }
 //delete part end
 
 //change part start
-      if(isset($_POST['button_change_account'])){
-        $account=$_POST['button_change_account'];
-        if($account != $_SESSION['account']){
-          $sql_find_account = "SELECT * FROM people WHERE account='$account'";
-          $this_rs = $db->prepare($sql_find_account);
-          $this_rs->execute();
-          $table = $this_rs->fetch();
-          if($table[2] == 1){
-            $new_is_admin = 0;
-          }
-          else{
-            $new_is_admin = 1;
-          }
-
-          $sql_find_account="UPDATE people SET is_admin=$new_is_admin WHERE account='$account'";
-          $rs=$db->prepare($sql_find_account);
-          $rs->execute();
-          print_p_with_div("notice", "Already upgrade", 1, "admin_house.php");
-        }
-        else{
-          print_p_with_div("alert", "Can't change this account by itself", 5, "admin_house.php");
-        }
-      }
+//go to another page
 //change part end
       $my_account = $_SESSION['account'];//for sql;
       $sql_find_account = "SELECT * FROM people WHERE account='$my_account'";
@@ -151,7 +124,14 @@
       $this_rs->execute();
       $table = $this_rs->fetch();
 ?>
-      <div id="welcome"><h1>Welcome to your house manage page!</h1></div>
+      <div id="welcome">
+        <h1>Welcome to your house manage page!</h1>
+        <div id="transbutton">
+          <p class="margin">
+            <input type="submit" onclick="location.href='admin.php'" value="首頁"></input>
+          </p>
+        </div>
+      </div>
 <!-- Personinfo part START-->
       <div id="personinfo">
         <p>Hello, <?php echo "$table[0]"; ?> ! </p>
@@ -171,16 +151,12 @@
           </tbody>
         </table>
         <p class="margin">
-          <input type="submit" onclick="location.href='admin.php'" value="首頁"></input>
-        </p>
-        <p class="margin">
           <input type="button" onclick="location.href='logout.php'" value="logout"></input>
         </p>
       </div>
 <!-- Personinfo part END-->
 <!-- Search part START-->
 <?php
-      echo "$table[5]";
       $user_id = $table[5] ;
       $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN information AS info ON house.id = info.house_id WHERE owner_id = $user_id";
       //$people_rs = $db->query($sql_find_all);
@@ -229,10 +205,12 @@
             <td><?php echo $table->information; ?></td>
             <td class="adjust">
               <form method="post" action="admin_house.php">
-              <input type="hidden" name="button_delete_account" value="<?php echo $table->account; ?>"><input class="adjust" value="delete" type="submit">
+                <input type="hidden" name="button_delete_house" value="<?php echo $table->account; ?>">
+                <input class="adjust" value="delete" type="submit">
               </form>
-              <form method="post" action="admin_house.php">
-              <input type="hidden" name="button_change_account" value="<?php echo $table->account; ?>"><input class="adjust" value="change" type="submit">
+              <form method="post" action="admin_house_change.php">
+                <input type="hidden" name="button_change_house" value="<?php echo $table->account; ?>">
+                <input class="adjust" value="change" type="submit">
               </form>
             </td>
           </tr>
@@ -250,10 +228,12 @@
             <td><?php echo $table->information; ?></td>
             <td class="adjust">
               <form method="post" action="admin_house.php">
-              <input type="hidden" name="button_delete_account" value="<?php echo $table->account; ?>"><input class="adjust" value="delete" type="submit">
+                <input type="hidden" name="button_delete_house" value="<?php echo $table->hid; ?>">
+                <input class="adjust" value="delete" type="submit">
               </form>
-              <form method="post" action="admin_house.php">
-              <input type="hidden" name="button_change_account" value="<?php echo $table->account; ?>"><input class="adjust" value="change" type="submit">
+              <form method="post" action="admin_house_change.php">
+                <input type="hidden" name="button_change_house" value="<?php echo $table->hid; ?>">
+                <input class="adjust" value="change" type="submit">
               </form>
             </td>
           </tr>
