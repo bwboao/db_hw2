@@ -37,17 +37,11 @@
   }
 
   function delete_house($db, $house_id){
-    $sql_delete_house="DELETE FROM  house WHERE id='$houseid';DELETE FROM favorite WHERE house_id = '$houseid'";
+    $sql_delete_house="DELETE FROM  house WHERE id=$house_id;DELETE FROM favorite WHERE house_id = $house_id";
     /*$rs=$db->prepare($sql_delete_house);
     $rs->execute();*/
     $rs=$db->query($sql_delete_house);
     //$db->query($sql_delete_house);
-  }
-
-  function print_session($session_name){
-    if(isset($_SESSION[$session_name])){
-      echo $_SESSION[$session_name];
-    }
   }
 
   function print_p($class_p, $content){
