@@ -12,12 +12,7 @@
     else{
 //delete part start
       if(isset($_POST['button_delete_house'])){
-        //store_session_as_post('button_delete_house', 'button_delete_house');
         $house_id=$_POST['button_delete_house'];
-        //unset_session('button_delete_house');
-        /*$sql="DELETE FROM  house WHERE id='$houseid';DELETE FROM favorite WHERE house_id = '$houseid'";
-        $rs=$db->prepare($sql);
-        $rs->execute();*/
         delete_house($db, $house_id);
         print_p_with_div("notice", "already delete", 1, "admin.php");
       }
@@ -30,9 +25,10 @@
           $user_id = $table[5];
           
           $house_id = $_POST['button_favorite_house'];
-          $sql_fav_house="INSERT INTO favorite ( id , user_id , favorite_id ) VALUES ( NULL , $user_id , $house_id )";
+          /*$sql_fav_house="INSERT INTO favorite ( id , user_id , favorite_id ) VALUES ( NULL , $user_id , $house_id )";
           $rs=$db->prepare($sql_fav_house);
-          $rs->execute();
+          $rs->execute();*/
+          favorite_house($db, $user_id, $house_id);
           print_p_with_div("notice", "Favorited <3", 1, "admin.php");
       }
 //favorite part end
@@ -76,11 +72,7 @@
 <!-- Personinfo part END-->
 <!-- Search part START-->
 <?php
-      $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id " ;
-      //$sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN information AS info ON house.id = info.house_id" ;
-      //$people_rs = $db->query($sql_find_all);
-      $people_rs = $db->prepare($sql_find_all);
-      $people_rs->execute();
+      $people_rs = show_house_all($db);
 ?>
 
 <!-- Search part END-->
