@@ -121,7 +121,14 @@
       $this_rs->execute();
       $table = $this_rs->fetch();
 ?>
-      <div id="welcome"><h1>Welcome to your favorite page!</h1></div>
+      <div id="welcome">
+        <h1>Welcome to your favorite page!</h1>
+        <div id="transbutton">
+          <p class="margin">
+            <input type="submit" onclick="location.href='admin.php'" value="首頁"></input>
+          </p>
+        </div>
+      </div>
 <!-- Personinfo part START-->
       <div id="personinfo">
         <p>Hello, <?php echo "$table[0]"; ?> ! </p>
@@ -140,9 +147,6 @@
             </tr>
           </tbody>
         </table>
-        <p class="margin">
-          <input type="submit" onclick="location.href='admin.php'" value="首頁"></input>
-        </p>
         <p class="margin">
           <input type="button" onclick="location.href='logout.php'" value="logout"></input>
         </p>
@@ -163,10 +167,6 @@
       <div id="table">
         <table>
           <h3>Your favorites</h3>
-          <tr><td class="adjust">
-            <form method="post" action="admin_favorite.php">
-            <input type="hidden" name="button_new_house" value="<?php echo $table->account; ?>"><input class="adjust" value="新增" type="submit">
-            </form>
 <?php
       $table = $people_rs->fetchObject();
       if($table == NULL)

@@ -82,7 +82,7 @@
           }
           unset($needto_output);
           ?></div>
-          <meta http-equiv=REFRESH CONTENT=2;url=admin.php><?php
+          <meta http-equiv=REFRESH CONTENT=2;url=admin_user.php><?php
         }
         else{
           $hash_password=hash('sha256',$password);
@@ -96,7 +96,7 @@
           unset($_SESSION['regist_email']);
           ?><div class="transport">
             <p class="notice">Regist success!</p>
-          <!--meta http-equiv=REFRESH CONTENT=2;url=admin.php-->
+          <meta http-equiv=REFRESH CONTENT=2;url=admin_user.php>
             </div>
           <?php
         }
@@ -112,10 +112,10 @@
           $sql="DELETE FROM people WHERE account='$account'";
           $rs=$db->prepare($sql);
           $rs->execute();
-          print_p_with_div("notice", "already delete", 1, "admin.php");
+          print_p_with_div("notice", "finish delete", 1, "admin_user.php");
         }
         else{
-          print_p_with_div("alert", "Can't delete this account by itself.", 0.5, "admin.php");
+          print_p_with_div("alert", "Can't delete this account by itself.", 0.5, "admin_user.php");
         }
       }
 //delete part end
@@ -151,7 +151,14 @@
       $this_rs->execute();
       $table = $this_rs->fetch();
 ?>
-      <div id="welcome"><h1>Welcome to the user manage page!</h1></div>
+      <div id="welcome">
+        <h1>Welcome to the user manage page!</h1>
+        <div id="transbutton" >
+          <p class="margin">
+          <input type="submit" onclick="location.href='admin.php'" value="首頁"></input>
+        </p>       
+        </div>
+      </div>
       <div id="personinfo">
         <p>Hello, <?php echo "$table[0]"; ?> ! </p>
 
@@ -170,10 +177,6 @@
             </tr>
           </tbody>
         </table>
-
-         <p class="margin">
-          <input type="submit" onclick="location.href='admin.php'" value="首頁"></input>
-        </p>
          <p>
           <input type="button" onclick="location.href='logout.php'" value="logout"></input>
         </p>
@@ -184,7 +187,7 @@
       $people_rs = $db->prepare($sql_find_all);
       $people_rs->execute();
 ?>
-      <div id="table">
+      <div id="usertable">
         <table>
           <h3>All users</h3>
           <tr>

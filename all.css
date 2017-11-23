@@ -101,7 +101,6 @@ input[type|="submit"]{
   border:none;
   border-radius:0.2em;
   box-shadow: 1px 1px 10px rgba(0,0,0,0.5);
-  background-color: white
 }
 input[value="logout"]{
   background-color:rgb(243,198,203);
@@ -146,7 +145,7 @@ div#personinfo{
   border-radius:0.5em;
   box-shadow: 4px 4px 16px rgba(0,0,0,0.5);
 }
-div#table {
+div#table,#usertable{
   max-width:50em;
   min-width:20em;
   margin:auto;
@@ -154,6 +153,9 @@ div#table {
   hello world;
   border-radius:0.5em;
   box-shadow: 4px 4px 16px rgba(0,0,0,0.5);
+}
+div#usertable{
+  max-width:35em;
 }
 div#index {
   position:fixed;

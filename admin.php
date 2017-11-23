@@ -125,11 +125,10 @@
           $user_id = $table[5];
           
           $house_id = $_POST['button_favorite_house'];
-          echo $user_id, $house_id;
           $sql_fav_house="INSERT INTO favorite ( id , user_id , favorite_id ) VALUES ( NULL , $user_id , $house_id )";
           $rs=$db->prepare($sql_fav_house);
           $rs->execute();
-          print_p_with_div("notice", "Already upgrade", 1, "admin.php");
+          print_p_with_div("notice", "Favorited <3", 1, "admin.php");
       }
 //favorite part end
 
