@@ -29,11 +29,12 @@
 
         $needto_reinput = 0;
 
-        $sql_find_account="SELECT account FROM people WHERE account= :account";
+        /*$sql_find_account="SELECT account FROM people WHERE account= :account";
         $find_rs=$db->prepare($sql_find_account);
         $find_rs->execute(array('account' => $account));
         $num=$find_rs->rowCount();
-        $table=$find_rs->fetch();
+        $table=$find_rs->fetch();*/
+        $table=find_account($db, $account);
 
         $needto_output = array();
 
@@ -118,10 +119,7 @@
 //favorite part start
       if(isset($_POST['button_favorite_house'])){
           $account = $_SESSION['account'];
-          $sql_find_account = "SELECT * FROM people WHERE account='$account'";
-          $this_rs = $db->prepare($sql_find_account);
-          $this_rs->execute();
-          $table = $this_rs->fetch();
+          $table = find_account($db, $account);
           $user_id = $table[5];
           
           $house_id = $_POST['button_favorite_house'];
@@ -134,10 +132,7 @@
 //favorite part end
 
       $my_account = $_SESSION['account'];//for sql;
-      $sql_find_account = "SELECT * FROM people WHERE account='$my_account'";
-      $this_rs = $db->prepare($sql_find_account);
-      $this_rs->execute();
-      $table = $this_rs->fetch();
+      $table = find_account($db, $my_account);
 ?>
       <div id="welcome">
         <h1>Welcome to the Adim page!</h1>
@@ -224,47 +219,7 @@
         </table>
       </div>
 <!-- Table part END -->
-      <!--div id="create">
-        <h3>Create</h3>
-        <p>Create user or administrator</p>
-
-        <form name="update_or_build" method="post" action="admin.php">
-        <table class="noshadow">
-          <tbody>
-            <tr>
-              <td>account</td>
-              <td><input name="account" type="text" value="<?php if(isset($_SESSION['regist_account'])){echo $_SESSION['regist_account'];} ?>"></td>
-            </tr>
-            <tr>
-              <td>password</td>
-              <td><input name="password" type="password"></td>
-            </tr>
-            <tr>
-              <td>confirm</td>
-              <td><input name="re_password" type="password"></td>
-            </tr>
-            <tr>
-              <td>is_admin</td>
-              <td><input name="is_admin" type="text" value="<?php if(isset($_SESSION['regist_is_admin'])){echo $_SESSION['regist_is_admin'];} ?>"></td>
-            </tr>
-            <tr>
-              <td>name</td>
-              <td><input name="name" type="text" value="<?php if(isset($_SESSION['regist_name'])){echo $_SESSION['regist_name'];} ?>"></td>
-            </tr>
-            <tr>
-              <td>email</td>
-              <td><input name="email" type="text" value="<?php if(isset($_SESSION['regist_email'])){echo $_SESSION['regist_email'];} ?>"></td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-          <input name="button_to_submit" type="submit" value="create">
-        </p>
-        </form>
-      </div-->
-
-<?php
+ <?php
     }
   }
   else{
