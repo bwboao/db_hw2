@@ -121,11 +121,17 @@ input.adjust{
 input.search{
   width: calc(100% - 7px);
 }
+input[value="search"]{
+  padding: 0.4em 0.8em;
+}
+input:disabled{
+  background-color: rgba(243,198,203,0.5);
+}
 form{
   margin:0;
   display:inline-block;
 }
-select[name="information"]:hover{
+select[name="information[]"]:hover{
   position:relative;
   top:1px;
   left:1px;
