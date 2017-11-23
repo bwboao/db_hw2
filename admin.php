@@ -127,8 +127,8 @@
             //echo "infoid = $infoid";
             switch ($infoid){
                 case "0":
-                  //unset($_POST['information']);
-                  break;
+                  unset($_POST['information']);
+                  break 2;
                 case "1":
                   $sql_find_require .= " info.information = \"laundry facilities\" ";
                   break;
@@ -161,7 +161,9 @@
                   break;
             }
           }
+          if(isset($_POST['information'])){
           $sql_find_require .= "GROUP BY house.id HAVING COUNT(house.id) = '" . count($_POST['information']) . "' " ;
+          }
         }
         //echo '<br>' ;
         //echo "addup = $sql_find_require";
@@ -221,7 +223,7 @@
               <td class="adjust">
                 <div id="infoselect" >
                   <select class="search" name="information[]" multiple="multiple">
-                    <option value="0">-don't check this-</option>
+                    <option value="0">-none-</option>
                     <option value="1">laundry facilities</option>
                     <option value="2">wifi</option>
                     <option value="3">lockers</option>
