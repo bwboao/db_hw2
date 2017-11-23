@@ -36,7 +36,7 @@
           print_p_with_div("notice", "Favorited <3", 1, "admin.php");
       }
 //favorite part end
-
+      
       $my_account = $_SESSION['account'];//for sql;
       $table = find_account($db, $my_account);
 ?>
@@ -76,27 +76,80 @@
 <!-- Personinfo part END-->
 <!-- Search part START-->
 <?php
-      $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id " ;
-      //$sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN information AS info ON house.id = info.house_id" ;
-      //$people_rs = $db->query($sql_find_all);
-      $people_rs = $db->prepare($sql_find_all);
-      $people_rs->execute();
+//search part start
+      if(isset($_POST['advanced_search'])){
+         $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id WHERE AS" ;
+        //$people_rs = $db->query($sql_find_all);
+        $people_rs = $db->prepare($sql_find_all);
+        $people_rs->execute();       
+      
+      
+      
+      
+      }
+      else{
+        $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id " ;
+        //$sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner FROM `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN information AS info ON house.id = info.house_id" ;
+        //$people_rs = $db->query($sql_find_all);
+        $people_rs = $db->prepare($sql_find_all);
+        $people_rs->execute();
+      }
+      
+      
+//search part end
 ?>
-
 <!-- Search part END-->
 <!-- Table part START-->
       <div id="table">
+      <form method="post" action="admin.php" >
         <table>
           <tbody>
             <tr>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="date" placeholder="date"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input name="" type="submit" value="search"</td>
+              <td class="adjust">
+                <input class="search" name="id" type="number" placeholder="interval" min="0">
+              </td>
+              <td class="adjust">
+                <input class="search" name="name" type="text" placeholder="keywords">
+              </td>
+              <td class="adjust">
+                <select class="search" name="price"  placeholder="keywords">
+                  <option value="0" >--</option>
+                  <option value="1" >0 ~ 30,000</option>
+                  <option value="2" >30,000 ~ 60,000</option>
+                  <option value="3" >60,000 ~ 120,000</option>
+                  <option value="4" >200,000 ~</option>
+                </select>
+              </td>
+              <td class="adjust">
+                <input class="search" name="location" type="text" placeholder="keywords">
+              </td>
+              <td class="adjust">
+                <input class="search" name="time" type="date" placeholder="date">
+              </td>
+              <td class="adjust">
+                <input class="search" name="owner" type="text" placeholder="keywords">
+              </td>
+              <td class="adjust">
+                <div id="infoselect" >
+                  <select class="search" name="information" multiple="multiple">
+                    <option value="0">--</option>
+                    <option value="1">laudry facilities</option>
+                    <option value="2">wifi</option>
+                    <option value="3">lockers</option>
+                    <option value="4">kitchen</option>
+                    <option value="5">elevator</option>
+                    <option value="6">no smoking</option>
+                    <option value="7">television</option>
+                    <option value="8">breakfast</option>
+                    <option value="9">toiletries provided</option>
+                    <option value="10">shuttle service</option>
+                  </select>
+                </div>
+              </td>
+              <td class="adjust">
+                <input name="advanced_search" type="hidden" value="true">
+                <input type="submit" value="search">
+              </td>
             </tr>
           </tbody>
           <h3>All houses</h3>
@@ -147,6 +200,7 @@
 ?>
         </tbody>
         </table>
+      </form>
       </div>
 <!-- Table part END -->
  <?php

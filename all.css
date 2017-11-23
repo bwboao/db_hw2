@@ -84,7 +84,7 @@ form>table>tr>td{
 
 /*Buttons*/
 
-input[type="text"],input[type="password"],[type="date"]{
+input[type="text"],[type="password"],[type="number"],[type="date"],select{
   padding:0.25em;
   border:none;
   box-shadow: inset 1px 1px 3px rgba(0,0,0,0.5);
@@ -98,7 +98,6 @@ input[type="button"]{
   border-radius:0.2em;
   box-shadow: 1px 1px 9px rgba(0,0,0,0.5);
 }
-
 input[type|="submit"]{
   min-width:4em;
   padding:0.8em;
@@ -125,6 +124,13 @@ input.search{
 form{
   margin:0;
   display:inline-block;
+}
+select[name="information"]:hover{
+  position:relative;
+  top:1px;
+  left:1px;
+  z-index:1;
+  height:10em;
 }
 /*the divs and a p and h1*/
 
@@ -232,5 +238,11 @@ div#transbutton{
   z-index:1;
   background-color:rgba(4,4,4,0);
   padding: 1.2em 0.5em;
+}
+div#infoselect{
+  padding:0;
+  margin:10px 0;
+  height:1.4em;
+  background-color:rgba(0,0,0,0);
 }
 }
