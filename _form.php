@@ -2,6 +2,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <?php
+  include("connect_database.php");
   if(session_status() == PHP_SESSION_NONE){
     session_start();
   }
@@ -16,12 +17,32 @@
     $_SESSION[$session_name] = $_POST[$post_name];
   }
       
-  function find_who_login($db, $account){
+  function find_account($db, $account){
     $sql_find_account = "SELECT * FROM people WHERE account=:account";
-    $people_rs = $db->prepare($sql_find_account);
-    $people_rs->execute(array('account' => $account));
-    $table = $people_rs->fetch();
+    $rs = $db->prepare($sql_find_account);
+    $rs->execute(array('account' => $account));
+    $table = $rs->fetch();
     return $table;
+  }
+
+  function insert_account($db, $account, $hash_password, $is_admin, $name, $email){ 
+    $sql_insert_account="INSERT INTO people (account, password, is_admin, name, email) VALUES (:account, :hash_password, :is_admin, :name, :email)";
+    $rs=$db->prepare($sql_insert_account);
+    $rs->execute(array('account' => $account, 'hash_password' => $hash_password, 'is_admin' => $is_admin, 'name' => $name, 'email' => $email));
+  }
+
+  function delete_house($db, $house_id){
+    $sql_delete_house="DELETE FROM  house WHERE id='$houseid';DELETE FROM favorite WHERE house_id = '$houseid'";
+    /*$rs=$db->prepare($sql_delete_house);
+    $rs->execute();*/
+    $rs=$db->query($sql_delete_house);
+    //$db->query($sql_delete_house);
+  }
+
+  function print_session($session_name){
+    if(isset($_SESSION[$session_name])){
+      echo $_SESSION[$session_name];
+    }
   }
 
   function print_p($class_p, $content){
