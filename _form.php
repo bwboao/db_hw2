@@ -37,9 +37,7 @@
   }
 
   function delete_house($db, $house_id){
-    $sql_delete_house="DELETE FROM  house WHERE id=$house_id;DELETE FROM favorite WHERE house_id = $house_id";
-    /*$rs=$db->prepare($sql_delete_house);
-    $rs->execute();*/
+    $sql_delete_house="DELETE FROM  house WHERE id=$house_id;DELETE FROM favorite WHERE favorite_id = $house_id;DELETE FROM information WHERE house_id = $house_id";
     $rs=$db->query($sql_delete_house);
     //$db->query($sql_delete_house);
   }
