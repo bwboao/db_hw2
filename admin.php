@@ -10,18 +10,16 @@
       print_p_with_div("alert", "Pemission denied, only administrator can use this page.", 2, "member.php");
     }
     else{
-//regist part start
-//regist part end
-
 //delete part start
       if(isset($_POST['button_delete_house'])){
-        $_SESSION['button_delete_house']=$_POST['button_delete_house'];
-          $houseid=$_POST['button_delete_house'];
-          unset_session('button_delete_house');
-          $sql="DELETE FROM  house WHERE id='$houseid';DELETE FROM favorite WHERE house_id = '$houseid'";
-          $rs=$db->prepare($sql);
-          $rs->execute();
-          print_p_with_div("notice", "already delete", 1, "admin.php");
+        //store_session_as_post('button_delete_house', 'button_delete_house');
+        $house_id=$_POST['button_delete_house'];
+        //unset_session('button_delete_house');
+        /*$sql="DELETE FROM  house WHERE id='$houseid';DELETE FROM favorite WHERE house_id = '$houseid'";
+        $rs=$db->prepare($sql);
+        $rs->execute();*/
+        delete_house($db, $house_id);
+        print_p_with_div("notice", "already delete", 1, "admin.php");
       }
 //delete part end
 

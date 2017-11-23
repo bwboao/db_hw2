@@ -19,15 +19,27 @@
       
   function find_account($db, $account){
     $sql_find_account = "SELECT * FROM people WHERE account=:account";
-    $people_rs = $db->prepare($sql_find_account);
-    $people_rs->execute(array('account' => $account));
-    $table = $people_rs->fetch();
+    $rs = $db->prepare($sql_find_account);
+    $rs->execute(array('account' => $account));
+    $table = $rs->fetch();
     return $table;
   }
   function print_session($session_name){
     if(isset($_SESSION[$session_name])){
       echo $_SESSION[$session_name];
     }
+  }
+
+  function insert_account($db, $account, $hash_password, $is_admin, $name, $email){ 
+    $sql_insert_account="INSERT INTO people (account, password, is_admin, name, email) VALUES (:account, :hash_password, :is_admin, :name, :email)";
+    $rs=$db->prepare($sql_insert_account);
+    $rs->execute(array('account' => $account, 'hash_password' => $hash_password, 'is_admin' => $is_admin, 'name' => $name, 'email' => $email));
+  }
+
+  function delete_house($db, $house_id){
+    $sql_delete_house="DELETE FROM  house WHERE id=$house_id;DELETE FROM favorite WHERE favorite_id = $house_id;DELETE FROM information WHERE house_id = $house_id";
+    $rs=$db->query($sql_delete_house);
+    //$db->query($sql_delete_house);
   }
 
   function print_p($class_p, $content){
