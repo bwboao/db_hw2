@@ -29,7 +29,7 @@ body{
   margin:0px
 }
 /*p for alert and notice*/
-td>p{
+td>p , form p{
   margin:0.1px;
 }
 p.alert{
@@ -165,7 +165,8 @@ div#personinfo{
   box-shadow: 4px 4px 16px rgba(0,0,0,0.5);
 }
 div#table,#usertable{
-  max-width:50em;
+  display:inline-block;
+  max-width:55em;
   min-width:20em;
   margin:auto;
   margin-top:1em;

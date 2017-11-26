@@ -52,7 +52,7 @@
 
   function show_house_all($db, $user_id){
     //$sql_find_house_all = "SELECT h.id hid, h.name hname, price, location, time, owner_id, p.name owner FROM house as h LEFT JOIN people AS p ON owner_id = p.id";
-    $sql_find_house_all = "SELECT *,house.id hid,house.name hname, people.name AS owner  FROM  `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN favorite ON favorite_id = house.id AND user_id = $user_id ORDER BY house.id ASC" ;
+    $sql_find_house_all = "SELECT *,house.id hid,house.name hname, people.name AS owner  FROM  `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN favorite ON favorite_id = house.id AND user_id = $user_id GROUP BY house.id ORDER BY house.id ASC" ;
     $rs = $db->query($sql_find_house_all);
     return $rs;
   }
