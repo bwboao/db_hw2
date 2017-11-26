@@ -162,7 +162,7 @@
             }
           }
           if(isset($_POST['information'])){
-          $sql_find_require .= "GROUP BY house.id HAVING COUNT(house.id) = '" . count($_POST['information']) . "' " ;
+          $sql_find_require .= " GROUP BY house.id HAVING COUNT(house.id) = '" . count($_POST['information']) . "' " ;
           }
         }
         //echo '<br>' ;
@@ -172,10 +172,13 @@
             $sql_find_all = $sql_find_all_by_info . " WHERE " . $sql_find_require;
           }
           else{
-            $sql_find_all .= " WHERE " . $sql_find_require;
+            $sql_find_all .= " WHERE " . $sql_find_require ;
           }
         }
-        $sql_find_all .= " ORDER BY house.id ASC";
+        else{
+          $sql_find_all .= " GROUP BY house.id ";
+        }
+        $sql_find_all .= "  ORDER BY house.id ASC";
         //echo '<br>' . "last = '$sql_find_all'";
         $people_rs = $db->prepare($sql_find_all);
         $people_rs->execute();       
