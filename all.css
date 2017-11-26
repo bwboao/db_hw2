@@ -85,7 +85,6 @@ form>table>tr>td{
 /*Buttons*/
 
 input[type="text"],[type="password"],[type="number"],[type="date"],select{
->>>>>>> FETCH_HEAD
   padding:0.25em;
   border:none;
   box-shadow: inset 1px 1px 3px rgba(0,0,0,0.5);

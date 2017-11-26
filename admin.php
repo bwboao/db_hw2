@@ -189,18 +189,6 @@
 <!-- Table part START-->
       <div id="table">
         <table>
-          <tbody>
-            <tr>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="date" placeholder="date"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input class="search" name="" type="text" placeholder="keywords"></td>
-              <td class="adjust"><input name="" type="submit" value="search"</td>
-            </tr>
-          </tbody>
           <h3>All houses</h3>
           <tbody>
             <tr><td class="adjust" colspan="8">
