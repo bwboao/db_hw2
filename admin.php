@@ -181,7 +181,17 @@
         else{
           $sql_find_all .= " GROUP BY house.id ";
         }
-        $sql_find_all .= "  ORDER BY house.id ASC";
+        if(isset($_POST['price_search'])){
+          $temp = $_POST['price_search'];
+          $sql_find_all .= "  ORDER BY price $temp ";
+        }
+        else if(isset($_POST['time_search'])){
+          $temp = $_POST['time_search'];
+          $sql_find_all .= "  ORDER BY time $temp";
+        }
+        else{
+          $sql_find_all .= "  ORDER BY house.id ASC";
+        }
         //echo '<br>' . "last = '$sql_find_all'";
         $people_rs = $db->prepare($sql_find_all);
         $people_rs->execute();       
@@ -201,7 +211,7 @@
             <p style="text-align:end;font-size:10px;">*info:use ctrl + mouse to multi-check the information</p>
             </td></tr>
             <tr>
-      <form method="post" action="admin.php" >
+      <form method="post" action="admin.php" id="searchform">
               <td class="adjust">
               <input class="search" name="id" type="number" placeholder="interval" min="0" <?php check_post_value("id"); ?>>
               </td>
@@ -254,9 +264,35 @@
           <tr>
             <th>id</th>
             <th>name</th>
-            <th>price</th>
+            <th>
+              <form method="post" action="admin.php" >
+                <button type="submit" form="searchform" class="svgbutton" name="price_search" value="ASC">
+                  <svg height="10" width="10">
+                    <polygon points="5,0 0,10 10,10" style="fill:rgba(50,0,255,0.5)" />
+                  </svg>
+                </button>
+              </form>
+                price
+              <button type="submit" form="searchform" class="svgbutton" name="price_search" value="DESC">
+              <svg height="10" width="10">
+                <polygon points="0,0 5,10 10,0" style="fill:rgba(50,0,255,0.5)" />
+              </svg>
+              </button>
+            </th>
             <th>location</th>
-            <th>time</th>
+            <th>
+              <button type="submit" form="searchform" class="svgbutton" name="time_search" value="ASC">
+                <svg height="10" width="10">
+                  <polygon points="5,0 0,10 10,10" style="fill:rgba(50,0,255,0.5)" />
+                </svg>
+              </button>
+                time
+              <button type="submit" form="searchform" class="svgbutton" name="time_search" value="DESC">
+                <svg height="10" width="10">
+                  <polygon points="0,0 5,10 10,0" style="fill:rgba(50,0,255,0.5)" />
+                </svg>
+              </button>
+            </th>
             <th>owner</th>
             <th>information</th>
             <th>option</th>
