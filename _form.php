@@ -3,6 +3,8 @@
 
 <?php
   include("connect_database.php");
+  $information = array('laundry_facilities', 'wifi', 'lockers', 'kitchen', 'elevator', 'no_smoking', 'television', 'breakfast', 'toiletries_provided', 'shuttle_service');
+  
   if(session_status() == PHP_SESSION_NONE){
     session_start();
   }
@@ -16,8 +18,33 @@
   function store_post_as_session($session_name, $post_name){
     $_SESSION[$session_name] = $_POST[$post_name];
   }
-      
+   
+  function check_is_admin($db){
+    if(isset($_SESSION['account'])){
+      $account = $_SESSION['account'];
+      $table = find_account($db, $account);
+      if($table[2] == 1){
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    }
+    else{
+      return -1;
+    }
+  }
+
   function find_account($db, $account){
+    $sql_find_account = "SELECT * FROM people WHERE account=:account";
+    $rs = $db->prepare($sql_find_account);
+    $rs->execute(array('account' => $account));
+    $table = $rs->fetch();
+    return $table;
+  }
+
+  function find_account_using($db){
+    $account = $_SESSION['account'];
     $sql_find_account = "SELECT * FROM people WHERE account=:account";
     $rs = $db->prepare($sql_find_account);
     $rs->execute(array('account' => $account));
@@ -32,8 +59,9 @@
   }
 
   function find_house($db, $house_id){
-    $sql_find_house = "SELECT * FROM house WHERE id=$housd_id";
-    $rs = $db->query($sql_find_house);
+    $sql_find_house = "SELECT * FROM house WHERE id=:house_id";
+    $rs = $db->prepare($sql_find_house);
+    $rs->execute(array('house_id' => $house_id));
     $table = $rs->fetch();
     return $table;
   }
@@ -61,6 +89,20 @@
     $sql_find_house_my = "SELECT h.id hid, h.name hname, price, location, time, owner_id, p.name owner FROM house as h LEFT JOIN people AS p ON owner_id = p.id WHERE owner_id = $user_id";
     $rs = $db->query($sql_find_house_my); 
     return $rs;
+  }
+
+  function update_house($db, $update_id, $update_name, $update_price, $update_location){
+    $sql_update_house = "UPDATE house SET name = :update_name, price = :update_price, location = :update_location WHERE id = :update_id";
+    $rs = $db->prepare($sql_update_house);
+    $rs->execute(array('update_name' => $update_name, 'update_price' => $update_price, 'update_location' => $update_location, 'update_id' => $update_id));
+  }
+
+  function create_house($db, $owner_id, $create_name, $create_price, $create_location){
+    $time = date('Y-m-d');
+    echo $time;
+    $sql_create_house = "INSERT INTO house (id, name, price, location, time, owner_id) VALUES (NULL, :create_name, :create_price, :create_location, :time, :owner_id)";
+    $rs = $db->prepare($sql_create_house);
+    $rs->execute(array('create_name' => $create_name, 'create_price' => $create_price, 'create_location' => $create_location, 'time' => $time, 'owner_id' => $owner_id));
   }
 
   function button_with_form($post_to, $name, $value, $button_name){
@@ -106,4 +148,26 @@
     echo "<meta http-equiv=REFRESH CONTENT=$redirect_time;url=$redirect_url>";
     echo "</div>";
   }
+
+  function print_information_checkbox($information, $values){
+    echo "<div>";
+    for($i = 0 ; $i < 10 ; $i++){
+      if($i == 4 || $i == 8){
+        echo "<br>";
+      }
+      $tmp_str = $information[$i];
+      echo "<input type = 'checkbox' name = $tmp_str";
+      if($values[$i] == 1){
+        echo "checked>";
+      }
+      else{
+        echo ">";
+      }
+      echo $tmp_str;
+      echo "</input>";
+    }
+    echo "</div>";
+  }
+
+
 ?>
