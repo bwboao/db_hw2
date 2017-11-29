@@ -169,5 +169,26 @@
     echo "</div>";
   }
 
-
+  function check_post_value($post_name){
+    if(isset($_POST[$post_name])){
+      $temp = $_POST[$post_name];
+    echo " value = \"$temp\" ";
+    }
+  }
+  function check_post_select($post_name, $value){
+    if(isset($_POST[$post_name])){
+      $temp = $_POST[$post_name];
+      if($temp == $value){
+        echo " selected = \"true\" ";
+      }
+    }
+  }
+  function check_post_multiselect($post_name, $value){
+    if(isset($_POST[$post_name])){
+      foreach($_POST[$post_name] as $post_value)
+      if($post_value == $value){
+        echo " selected = \"true\" ";
+      }
+    }
+  }
 ?>

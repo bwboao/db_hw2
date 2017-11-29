@@ -121,12 +121,15 @@
           $sql_find_require .= " people.name = \"$_POST[owner]\" "; 
         }
         if(isset($_POST['information'])){
+          if(!empty($sql_find_require)){$sql_find_require .= " AND ( "; }
+          else{$sql_find_require .= " ( ";}
           foreach ($_POST['information'] as $infoid )
           {
-          if(!empty($sql_find_require)){$sql_find_require .= " OR "; }
             //echo "infoid = $infoid";
+            if(!empty($infoid!=$_POST['information'][0])){$sql_find_require .= " OR "; }
             switch ($infoid){
                 case "0":
+                  $sql_find_require .= " 0=0 )";
                   unset($_POST['information']);
                   break 2;
                 case "1":
@@ -162,7 +165,7 @@
             }
           }
           if(isset($_POST['information'])){
-          $sql_find_require .= " GROUP BY house.id HAVING COUNT(house.id) = '" . count($_POST['information']) . "' " ;
+          $sql_find_require .= ") GROUP BY house.id HAVING COUNT(house.id) = '" . count($_POST['information']) . "' " ;
           }
         }
         //echo '<br>' ;
@@ -178,7 +181,17 @@
         else{
           $sql_find_all .= " GROUP BY house.id ";
         }
-        $sql_find_all .= "  ORDER BY house.id ASC";
+        if(isset($_POST['price_search'])){
+          $temp = $_POST['price_search'];
+          $sql_find_all .= "  ORDER BY price $temp ";
+        }
+        else if(isset($_POST['time_search'])){
+          $temp = $_POST['time_search'];
+          $sql_find_all .= "  ORDER BY time $temp";
+        }
+        else{
+          $sql_find_all .= "  ORDER BY house.id ASC";
+        }
         //echo '<br>' . "last = '$sql_find_all'";
         $people_rs = $db->prepare($sql_find_all);
         $people_rs->execute();       
@@ -198,45 +211,45 @@
             <p style="text-align:end;font-size:10px;">*info:use ctrl + mouse to multi-check the information</p>
             </td></tr>
             <tr>
-      <form method="post" action="admin.php" >
+      <form method="post" action="admin.php" id="searchform">
               <td class="adjust">
-                <input class="search" name="id" type="number" placeholder="interval" min="0">
+              <input class="search" name="id" type="number" placeholder="interval" min="0" <?php check_post_value("id"); ?>>
               </td>
               <td class="adjust">
-                <input class="search" name="name" type="text" placeholder="keywords">
+                <input class="search" name="name" type="text" placeholder="keywords"<?php check_post_value("name"); ?>>
               </td>
               <td class="adjust">
-                <select class="search" name="price"  placeholder="keywords">
-                  <option value="0" >--</option>
-                  <option value="1" >0 ~ 30,000</option>
-                  <option value="2" >30,000 ~ 60,000</option>
-                  <option value="3" >60,000 ~ 120,000</option>
-                  <option value="4" >120,000 ~</option>
+                <select class="search" name="price"  placeholder="keywords" >
+                  <option value="0" <?php check_post_select("price", "0"); ?>>--</option>
+                  <option value="1" <?php check_post_select("price", "1"); ?>>0 ~ 30,000</option>
+                  <option value="2" <?php check_post_select("price", "2"); ?>>30,000 ~ 60,000</option>
+                  <option value="3" <?php check_post_select("price", "3"); ?>>60,000 ~ 120,000</option>
+                  <option value="4" <?php check_post_select("price", "4"); ?>>120,000 ~</option>
                 </select>
               </td>
               <td class="adjust">
-                <input class="search" name="location" type="text" placeholder="keywords">
+                <input class="search" name="location" type="text" placeholder="keywords"<?php check_post_value("location"); ?>>
               </td>
               <td class="adjust">
-                <input class="search" name="time" type="date" placeholder="date">
+                <input class="search" name="time" type="date" placeholder="date"<?php check_post_value("time"); ?>>
               </td>
               <td class="adjust">
-                <input class="search" name="owner" type="text" placeholder="keywords">
+                <input class="search" name="owner" type="text" placeholder="keywords"<?php check_post_value("owner"); ?>>
               </td>
               <td class="adjust">
                 <div id="infoselect" >
                   <select class="search" name="information[]" multiple="multiple">
-                    <option value="0">-none-</option>
-                    <option value="1">laundry facilities</option>
-                    <option value="2">wifi</option>
-                    <option value="3">lockers</option>
-                    <option value="4">kitchen</option>
-                    <option value="5">elevator</option>
-                    <option value="6">no smoking</option>
-                    <option value="7">television</option>
-                    <option value="8">breakfast</option>
-                    <option value="9">toiletries provided</option>
-                    <option value="10">shuttle service</option>
+                    <option value="0" <?php check_post_multiselect("information","0"); ?>>-none-</option>
+                    <option value="1" <?php check_post_multiselect("information","1"); ?>>laundry facilities</option>
+                    <option value="2" <?php check_post_multiselect("information","2"); ?>>wifi</option>
+                    <option value="3" <?php check_post_multiselect("information","3"); ?>>lockers</option>
+                    <option value="4" <?php check_post_multiselect("information","4"); ?>>kitchen</option>
+                    <option value="5" <?php check_post_multiselect("information","5"); ?>>elevator</option>
+                    <option value="6" <?php check_post_multiselect("information","6"); ?>>no smoking</option>
+                    <option value="7" <?php check_post_multiselect("information","7"); ?>>television</option>
+                    <option value="8" <?php check_post_multiselect("information","8"); ?>>breakfast</option>
+                    <option value="9" <?php check_post_multiselect("information","9"); ?>>toiletries provided</option>
+                    <option value="10" <?php check_post_multiselect("information","10"); ?>>shuttle service</option>
                   </select>
                 </div>
               </td>
@@ -251,9 +264,35 @@
           <tr>
             <th>id</th>
             <th>name</th>
-            <th>price</th>
+            <th>
+              <form method="post" action="admin.php" >
+                <button type="submit" form="searchform" class="svgbutton" name="price_search" value="ASC">
+                  <svg height="10" width="10">
+                    <polygon points="5,0 0,10 10,10" style="fill:rgba(50,0,255,0.5)" />
+                  </svg>
+                </button>
+              </form>
+                price
+              <button type="submit" form="searchform" class="svgbutton" name="price_search" value="DESC">
+              <svg height="10" width="10">
+                <polygon points="0,0 5,10 10,0" style="fill:rgba(50,0,255,0.5)" />
+              </svg>
+              </button>
+            </th>
             <th>location</th>
-            <th>time</th>
+            <th>
+              <button type="submit" form="searchform" class="svgbutton" name="time_search" value="ASC">
+                <svg height="10" width="10">
+                  <polygon points="5,0 0,10 10,10" style="fill:rgba(50,0,255,0.5)" />
+                </svg>
+              </button>
+                time
+              <button type="submit" form="searchform" class="svgbutton" name="time_search" value="DESC">
+                <svg height="10" width="10">
+                  <polygon points="0,0 5,10 10,0" style="fill:rgba(50,0,255,0.5)" />
+                </svg>
+              </button>
+            </th>
             <th>owner</th>
             <th>information</th>
             <th>option</th>
