@@ -17,35 +17,41 @@
       $_SESSION['change_house_price'] = $my_house[2];
       $_SESSION['change_house_location'] = $my_house[3];
       $_SESSION['is_update'] = 1;
+      $values = show_info_array($db, $_SESSION['change_house_id'], $info_to_num);
     }
     if(isset($_POST['price'])){
       $change_house_name = $_POST['house_name'];
       $change_house_price = $_POST['price'];
       $change_house_location = $_POST['location'];
+      $values = make_array();
       for($i = 0;$i < 10;$i++){
-        if(isset($_POST[$information[$i]])){
+        if(isset($_POST[$num_to_info[$i]])){
           $values[$i] = 1;
         }
-        echo $values[$i];
       }
-      //$change_house_time = date('Y-m-d');
+      //print_r($values);
       $owner_id = $account_using[5];//people.id
       if($_SESSION['is_update'] == '1'){
         $change_house_id = $_SESSION['change_house_id'];
         update_house($db, $change_house_id, $change_house_name, $change_house_price, $change_house_location);  
+        update_info($db, $change_house_id, $values, $num_to_info, $info_to_num);
       }
       else{
         create_house($db, $owner_id, $change_house_name, $change_house_price, $change_house_location);    
+        $change_house_id = find_latest($db, "house");
+        update_info($db, $change_house_id, $values, $num_to_info, $info_to_num);
+        
       }
-      unset_session('change_house_id');
-      unset_session('change_house_name');
-      unset_session('change_house_price');
-      unset_session('change_house_location');
+      //unset_session('change_house_id');
+      //unset_session('change_house_name');
+      //unset_session('change_house_price');
+      //unset_session('change_house_location');
+      //$values = make_array();
       if($_SESSION['is_update'] == '1'){
-        //print_p_with_div("notice", "update success", 2, "admin_house.php");
+        print_p_with_div("notice", "update success", 1, "admin_house.php");
       }
       else{
-        //print_p_with_div("notice", "create success", 2, "admin_house.php");
+        print_p_with_div("notice", "create success", 1, "admin_house.php");
       }
     }
   }
@@ -83,13 +89,13 @@
     </table>
 
 <?php
-    print_information_checkbox($information, $values);
+    print_information_checkbox($values, $num_to_info);
 ?>
     <p>
       <input name="button_to_create" type="submit" value=<?php if($_SESSION['is_update'] == '1'){echo "update";}else{echo "create";} ?>>
     </p>
   </form>
-      <input type="button" onclick="location.href='admin.php'" value="cancel"></input>
+      <input type="button" onclick="location.href='admin_house.php'" value="cancel"></input>
   </div>
 </body>
 </html>
