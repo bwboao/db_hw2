@@ -58,7 +58,7 @@
         <p class="alert">Regist failed :(</p>
         <?php
           foreach($needto_output as $key => $value){
-        ?><p class="alert" style="text-align:start">><?php echo $value ?></p><?php
+        ?><p class="alert" style="text-align:start"><?php echo $value ?></p><?php
         }
         
         unset($needto_output); 

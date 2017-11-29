@@ -4,7 +4,12 @@
   include("connect_database.php");
   include("_form.php");
   unset_session('login_account');
-  
+  unset_session('is_update');
+  unset_session('change_house_id');
+  unset_session('change_house_name');
+  unset_session('change_house_price');
+  unset_session('change_house_location');
+
   if(isset($_SESSION['account'])){//check is_admin
     if(isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != 1){
       print_p_with_div("alert", "Pemission denied, only administrator can use this page.", 2, "member.php");
@@ -14,7 +19,7 @@
       if(isset($_POST['button_delete_house'])){
         $house_id=$_POST['button_delete_house'];
         delete_house($db, $house_id);
-        print_p_with_div("notice", "already delete", 1, "admin.php");
+        print_p_with_div("notice", "already delete", 1, "admin_house.php");
       }
 //delete part end
 
@@ -57,6 +62,9 @@
 //search part start
       $user_id = $account_using[5];//5 is id
       $people_rs = show_house_my($db, $user_id);
+      //while($my_house = $people_rs->fetchObject()){
+      //  print_r($my_house);
+      //}
 //search part end
 ?>
 
@@ -64,18 +72,19 @@
       <div id="table">
         <table>
           <h3>Your houses</h3>
-          <tr><td class="adjust">
-            <form method="post" action="admin_house_change.php">
-            <input type="hidden" name="button_new_house" value="<?php echo $user_id; ?>">
-            <input class="adjust" value="新增" type="submit">
-            </form>
-          </td></tr>
+          <tr>
+            <td class="adjust">
+              <form method="post" action="admin_house_change.php">
+              <input type="hidden" name="button_new_house" value="<?php echo $user_id; ?>">
+              <input class="adjust" value="新增" type="submit">
+              </form>
+            </td>
+          </tr>
 <?php
-      $my_houses = $people_rs->fetchObject();
-      if($my_houses == NULL){
-        print_h(3, "你尚未擁有任何房子");
-      }
-      else{
+      $has_house = 0;
+      while($my_houses = $people_rs->fetchObject()){
+        if($my_houses != NULL && $has_house == 0){
+          $has_house = 1;
 ?>
           <tr>
             <th>id</th>
@@ -87,6 +96,11 @@
             <th>information</th>
             <th>option</th>
           </tr>
+
+<?php
+        }
+
+?>  
           <tr>
 	    <td><?php echo $my_houses->hid; ?></td>
             <td><?php echo $my_houses->hname; ?></td>
@@ -94,7 +108,7 @@
             <td><?php echo $my_houses->location; ?></td>
             <td><?php echo $my_houses->time; ?></td>
             <td><?php echo $my_houses->owner; ?></td>
-            <td><?php print_info($db, $my_houses->hid); ?></td>
+            <td><?php print_info($db, $my_houses->hid, $info_to_num, $num_to_info); ?></td>
             <td class="adjust">
               <?php button_with_form("admin_house.php", "button_delete_house", $my_houses->hid, "delete"); ?>
               <?php button_with_form("admin_house_change.php", "button_change_house", $my_houses->hid, "change"); ?>
@@ -102,6 +116,10 @@
           </tr>
 <?php
       }
+      
+        if($has_house == 0){
+          print_p("notice", "you don't have any house.");
+        }
 ?>
         </table>
       </div>
