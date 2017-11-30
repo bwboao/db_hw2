@@ -3,12 +3,19 @@
 
 <?php
   include("connect_database.php");
-  $information = array('laundry_facilities', 'wifi', 'lockers', 'kitchen', 'elevator', 'no_smoking', 'television', 'breakfast', 'toiletries_provided', 'shuttle_service');
-  
+  $info_to_num = array('laundry_facilities' => 0, 'wifi' => 1, 'lockers' => 2, 'kitchen' => 3, 'elevator' => 4, 'no_smoking' => 5, 'television' => 6, 'breakfast' => 7, 'toiletries_provided' => 8, 'shuttle_service' => 9);
+  $num_to_info = array('laundry_facilities', 'wifi', 'lockers', "kitchen", 'elevator', 'no_smoking', 'television', 'breakfast', 'toiletries_provided', 'shuttle_service');
+
+
   if(session_status() == PHP_SESSION_NONE){
     session_start();
   }
 
+  function make_array(){
+    $array = array(0,0,0,0,0,0,0,0,0,0);
+    return $array;
+  }
+    
   function unset_session($session_to_delete){
     if(isset($_SESSION[$session_to_delete])){
       unset($_SESSION[$session_to_delete]);
@@ -33,6 +40,13 @@
     else{
       return -1;
     }
+  }
+
+  function find_latest($db, $table){
+    $sql_find_latest = "SELECT MAX(id) from $table";
+    $latest_id = $db->query($sql_find_latest);
+    $table = $latest_id->fetch();
+    return $table[0];
   }
 
   function find_account($db, $account){
@@ -91,6 +105,20 @@
     return $rs;
   }
 
+  function show_info_array($db, $house_id, $info_to_num){
+    $sql_find_info_all = "SELECT * FROM information WHERE house_id = $house_id";
+    $rs = $db->query($sql_find_info_all);
+    $values = make_array();
+    if($rs == NULL){
+      return $values;
+    }
+    while($info = $rs->fetchObject()){
+      $values[$info_to_num[$info->information]] = 1;
+    }
+    return $values;
+  }
+
+
   function update_house($db, $update_id, $update_name, $update_price, $update_location){
     $sql_update_house = "UPDATE house SET name = :update_name, price = :update_price, location = :update_location WHERE id = :update_id";
     $rs = $db->prepare($sql_update_house);
@@ -99,11 +127,39 @@
 
   function create_house($db, $owner_id, $create_name, $create_price, $create_location){
     $time = date('Y-m-d');
-    echo $time;
     $sql_create_house = "INSERT INTO house (id, name, price, location, time, owner_id) VALUES (NULL, :create_name, :create_price, :create_location, :time, :owner_id)";
     $rs = $db->prepare($sql_create_house);
-    $rs->execute(array('create_name' => $create_name, 'create_price' => $create_price, 'create_location' => $create_location, 'time' => $time, 'owner_id' => $owner_id));
+    $rs->execute(array('create_name' => $create_name, 'create_price' => $create_price, 'create_location' => $create_location, 'time' => $time, 'owner_id' => $owner_id)); 
+
   }
+
+  function delete_info($db ,$house_id, $info){
+    $sql_delete_info = "DELETE FROM information WHERE house_id = $house_id AND information = '$info'";
+    //$sql_delete_info = "DELETE FROM information WHERE house_id = $house_id AND information = \"$info\"";
+    $db->query($sql_delete_info);
+  }
+  
+  function create_info($db ,$house_id, $info){
+    $sql_create_info = "INSERT INTO information (id, house_id, information) VALUES (NULL, $house_id, '$info')";
+    $db->query($sql_create_info);
+ }
+
+  function update_info($db, $update_id, $values, $num_to_info, $info_to_num){
+    $array = show_info_array($db, $update_id, $info_to_num);
+    for($i = 0;$i < 10;$i++){
+      if($values[$i] != $array[$i]){
+        $tmp_str = $num_to_info[$i];
+        if($values[$i] == 1){
+          create_info($db, $update_id, $tmp_str);
+        }
+        else{
+          delete_info($db ,$update_id, $tmp_str);
+        }
+      }
+    }   
+ 
+  }
+
 
   function button_with_form($post_to, $name, $value, $button_name){
     echo "<form method='post' action=$post_to>";
@@ -112,12 +168,15 @@
     echo "</form>";
   }
 
-  function print_info($db, $house_id){
-    $sql_find_info = "SELECT * FROM information AS info WHERE info.house_id = $house_id";
-    $rs = $db->query($sql_find_info);
-    while($info = $rs->fetchObject()){
-       echo "<p> $info->information </p>" ;
-    } 
+  function print_info($db, $house_id, $info_to_num, $num_to_info){
+    $array = show_info_array($db, $house_id, $info_to_num);
+    for($i = 0;$i < 10;$i++){
+      if($array[$i] == 1){
+        echo "<p>";
+        echo $num_to_info[$i];
+        echo "</p>";
+      }
+    }
   }
 
   function print_session($session_name){
@@ -149,16 +208,16 @@
     echo "</div>";
   }
 
-  function print_information_checkbox($information, $values){
+  function print_information_checkbox($values, $num_to_info){
     echo "<div>";
     for($i = 0 ; $i < 10 ; $i++){
       if($i == 4 || $i == 8){
         echo "<br>";
       }
-      $tmp_str = $information[$i];
+      $tmp_str = $num_to_info[$i];
       echo "<input type = 'checkbox' name = $tmp_str";
       if($values[$i] == 1){
-        echo "checked>";
+        echo " checked>";
       }
       else{
         echo ">";

@@ -5,6 +5,11 @@
   include("_form.php");
   unset_session('login_account');
   unset_session('is_update');
+  unset_session('change_house_id');
+  unset_session('change_house_name');
+  unset_session('change_house_price');
+  unset_session('change_house_location');
+
   if(isset($_SESSION['account'])){//check is_admin
     if(isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != 1){
       print_p_with_div("alert", "Pemission denied, only administrator can use this page.", 2, "member.php");
@@ -103,7 +108,7 @@
             <td><?php echo $my_houses->location; ?></td>
             <td><?php echo $my_houses->time; ?></td>
             <td><?php echo $my_houses->owner; ?></td>
-            <td><?php print_info($db, $my_houses->hid); ?></td>
+            <td><?php print_info($db, $my_houses->hid, $info_to_num, $num_to_info); ?></td>
             <td class="adjust">
               <?php button_with_form("admin_house.php", "button_delete_house", $my_houses->hid, "delete"); ?>
               <?php button_with_form("admin_house_change.php", "button_change_house", $my_houses->hid, "change"); ?>
