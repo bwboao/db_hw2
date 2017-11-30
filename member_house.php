@@ -9,17 +9,17 @@
   unset_session('change_house_name');
   unset_session('change_house_price');
   unset_session('change_house_location');
-
-  if(isset($_SESSION['account'])){//check is_admin
-    if(isset($_SESSION['is_admin']) && $_SESSION['is_admin'] != 1){
-      print_p_with_div("alert", "Pemission denied, only administrator can use this page.", 2, "member.php");
+  if(isset($_SESSION['account'])){
+    $my_account = $_SESSION['account'];
+    if($_SESSION['is_admin'] == 1){
+      print_p_with_div("alert", "This account is admin, you DON'T belong here", 2, "admin.php");
     }
     else{
 //delete part start
       if(isset($_POST['button_delete_house'])){
         $house_id=$_POST['button_delete_house'];
         delete_house($db, $house_id);
-        print_p_with_div("notice", "already delete", 1, "admin_house.php");
+        print_p_with_div("notice", "already delete", 1, "member_house.php");
       }
 //delete part end
 
@@ -30,7 +30,7 @@
         <h1>Welcome to your house manage page!</h1>
         <div id="transbutton">
           <p class="margin">
-            <input type="submit" onclick="location.href='admin.php'" value="首頁"></input>
+            <input type="submit" onclick="location.href='member.php'" value="首頁"></input>
           </p>
         </div>
       </div>
@@ -75,7 +75,7 @@
           <tr>
             <td class="adjust" colspan="7"></td>
             <td class="adjust">
-              <form method="post" action="admin_house_change.php">
+              <form method="post" action="member_house_change.php">
               <input type="hidden" name="button_new_house" value="<?php echo $user_id; ?>">
               <input class="adjust" value="新增" type="submit">
               </form>
@@ -111,8 +111,8 @@
             <td><?php echo $my_houses->owner; ?></td>
             <td><?php print_info($db, $my_houses->hid, $info_to_num, $num_to_info); ?></td>
             <td class="adjust">
-              <?php button_with_form("admin_house.php", "button_delete_house", $my_houses->hid, "delete"); ?>
-              <?php button_with_form("admin_house_change.php", "button_change_house", $my_houses->hid, "change"); ?>
+              <?php button_with_form("member_house.php", "button_delete_house", $my_houses->hid, "delete"); ?>
+              <?php button_with_form("member_house_change.php", "button_change_house", $my_houses->hid, "change"); ?>
             </td>
           </tr>
 <?php
@@ -133,3 +133,4 @@
     print_p_with_div("alert", "please login", 2, "index.php");
   }
 ?>
+

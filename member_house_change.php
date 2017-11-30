@@ -3,7 +3,6 @@
 <?php
   include("connect_database.php");
   include("_form.php");
-
   if(check_is_admin($db) != -1){
     $account_using = find_account_using($db);
     $values=array(0,0,0,0,0,0,0,0,0,0);  
@@ -25,7 +24,6 @@
       $change_house_location = $_POST['location'];
       $values = make_array();
       for($i = 0;$i < 10;$i++){
-        //echo $num_to_info[$i] . " " . $_POST[$i] . "<br>" ;
         if(isset($_POST[$i])){
           $values[$i] = 1;
         }
@@ -49,10 +47,10 @@
       //unset_session('change_house_location');
       //$values = make_array();
       if($_SESSION['is_update'] == '1'){
-        print_p_with_div("notice", "update success", 1, "admin_house.php");
+        print_p_with_div("notice", "update success", 1, "member_house.php");
       }
       else{
-        print_p_with_div("notice", "create success", 1, "admin_house.php");
+        print_p_with_div("notice", "create success", 1, "member_house.php");
       }
     }
   }
@@ -69,7 +67,7 @@
 
 <body>
   <div id="regist"><!--copy from regist.php-->
-  <form name="change_house" method="post" action="admin_house_change.php">
+  <form name="change_house" method="post" action="member_house_change.php">
   <h3><?php if($_SESSION['is_update'] == 1){echo "Update ";}else{echo "Add new ";} ?>house</h3> 
     <p><?php if($_SESSION['is_update'] == 1){echo "update ";}else{echo "add ";} ?>it~</p>
     <table class="noshadow">
@@ -96,9 +94,10 @@
       <input name="button_to_create" type="submit" value=<?php if($_SESSION['is_update'] == '1'){echo "update";}else{echo "create";} ?>>
     </p>
   </form>
-      <input type="button" onclick="location.href='admin_house.php'" value="cancel"></input>
+      <input  type="button" onclick="location.href='member_house.php'" value="cancel"></input>
   </div>
 </body>
 </html>
   
+
 

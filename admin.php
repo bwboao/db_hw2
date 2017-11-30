@@ -145,7 +145,7 @@
                   $sql_find_require .= " info.information = \"kitchen\" ";
                   break;
                 case "5":
-                  $sql_find_require .= " info.information = \"elevators\" ";
+                  $sql_find_require .= " info.information = \"elevator\" ";
                   break;
                 case "6":
                   $sql_find_require .= " info.information = \"no smoking\" ";

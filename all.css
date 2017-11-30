@@ -105,7 +105,7 @@ input[type|="submit"]{
   border-radius:0.2em;
   box-shadow: 1px 1px 10px rgba(0,0,0,0.5);
 }
-input[value="logout"]{
+input[value="logout"],[value="cancel"]{
   background-color:rgb(243,198,203);
 }
 input.adjust{
@@ -133,6 +133,10 @@ input:disabled{
 form{
   margin:0;
   display:inline-block;
+}
+form[name="change_house"]{
+  margin:2px auto;
+  display:block;
 }
 select[name="information[]"]:hover{
   position:relative;
@@ -263,5 +267,8 @@ div#infoselect{
   margin:10px 0;
   height:1.4em;
   background-color:rgba(0,0,0,0);
+}
+div.nobackground{
+  background:transparent;
 }
 }

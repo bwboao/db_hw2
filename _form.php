@@ -3,8 +3,8 @@
 
 <?php
   include("connect_database.php");
-  $info_to_num = array('laundry_facilities' => 0, 'wifi' => 1, 'lockers' => 2, 'kitchen' => 3, 'elevator' => 4, 'no_smoking' => 5, 'television' => 6, 'breakfast' => 7, 'toiletries_provided' => 8, 'shuttle_service' => 9);
-  $num_to_info = array('laundry_facilities', 'wifi', 'lockers', "kitchen", 'elevator', 'no_smoking', 'television', 'breakfast', 'toiletries_provided', 'shuttle_service');
+  $info_to_num = array('laundry facilities' => 0, 'wifi' => 1, 'lockers' => 2, 'kitchen' => 3, 'elevator' => 4, 'no smoking' => 5, 'television' => 6, 'breakfast' => 7, 'toiletries provided' => 8, 'shuttle service' => 9);
+  $num_to_info = array('laundry facilities', 'wifi', 'lockers', 'kitchen', 'elevator', 'no smoking', 'television', 'breakfast', 'toiletries provided', 'shuttle service');
 
 
   if(session_status() == PHP_SESSION_NONE){
@@ -130,8 +130,37 @@
     $sql_create_house = "INSERT INTO house (id, name, price, location, time, owner_id) VALUES (NULL, :create_name, :create_price, :create_location, :time, :owner_id)";
     $rs = $db->prepare($sql_create_house);
     $rs->execute(array('create_name' => $create_name, 'create_price' => $create_price, 'create_location' => $create_location, 'time' => $time, 'owner_id' => $owner_id)); 
-
   }
+
+  function delete_info($db ,$house_id, $info){
+    $sql_delete_info = "DELETE FROM information WHERE house_id = $house_id AND information = '$info'";
+    //$sql_delete_info = "DELETE FROM information WHERE house_id = $house_id AND information = \"$info\"";
+    $db->query($sql_delete_info);
+  }
+  
+  function create_info($db ,$house_id, $info){
+    $sql_create_info = "INSERT INTO information (id, house_id, information) VALUES (NULL, $house_id, '$info')";
+    $sql_create_info = "INSERT INTO information (id, house_id, information) VALUES (NULL, $house_id, \"$info\")";
+    //echo "<br>" . $sql_create_info;
+    $db->query($sql_create_info);
+ }
+
+  function update_info($db, $update_id, $values, $num_to_info, $info_to_num){
+    $array = show_info_array($db, $update_id, $info_to_num);
+    for($i = 0;$i < 10;$i++){
+      if($values[$i] != $array[$i]){
+        $tmp_str = $num_to_info[$i];
+        if($values[$i] == 1){
+          create_info($db, $update_id, $tmp_str);
+        }
+        else{
+          delete_info($db ,$update_id, $tmp_str);
+        }
+      }
+    }   
+ 
+  }
+
 
   function delete_info($db ,$house_id, $info){
     $sql_delete_info = "DELETE FROM information WHERE house_id = $house_id AND information = '$info'";
@@ -209,13 +238,13 @@
   }
 
   function print_information_checkbox($values, $num_to_info){
-    echo "<div>";
+    echo "<div class=\"nobackground\">";
     for($i = 0 ; $i < 10 ; $i++){
       if($i == 4 || $i == 8){
         echo "<br>";
       }
       $tmp_str = $num_to_info[$i];
-      echo "<input type = 'checkbox' name = $tmp_str";
+      echo "<input type = 'checkbox' name = \"$i\"";
       if($values[$i] == 1){
         echo " checked>";
       }
