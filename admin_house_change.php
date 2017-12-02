@@ -4,7 +4,10 @@
   include("connect_database.php");
   include("_form.php");
 
-  if(check_is_admin($db) != -1){
+  if(check_is_admin($db) == -1){//1 is admin, 0 is member, -1 is others
+    print_p_with_div("alert", "Please login.", 2, "index.php");
+  }
+  else{
     $account_using = find_account_using($db);
     $values=array(0,0,0,0,0,0,0,0,0,0);  
     if(!isset($_SESSION['is_update'])){
@@ -25,12 +28,10 @@
       $change_house_location = $_POST['location'];
       $values = make_array();
       for($i = 0;$i < 10;$i++){
-        //echo $num_to_info[$i] . " " . $_POST[$i] . "<br>" ;
         if(isset($_POST[$i])){
           $values[$i] = 1;
         }
       }
-      //print_r($values);
       $owner_id = $account_using[5];//people.id
       if($_SESSION['is_update'] == '1'){
         $change_house_id = $_SESSION['change_house_id'];
@@ -41,13 +42,7 @@
         create_house($db, $owner_id, $change_house_name, $change_house_price, $change_house_location);    
         $change_house_id = find_latest($db, "house");
         update_info($db, $change_house_id, $values, $num_to_info, $info_to_num);
-        
       }
-      //unset_session('change_house_id');
-      //unset_session('change_house_name');
-      //unset_session('change_house_price');
-      //unset_session('change_house_location');
-      //$values = make_array();
       if($_SESSION['is_update'] == '1'){
         print_p_with_div("notice", "update success", 1, "admin_house.php");
       }
@@ -55,9 +50,6 @@
         print_p_with_div("notice", "create success", 1, "admin_house.php");
       }
     }
-  }
-  else{
-    print_p_with_div("alert", "Please login.", 2, "index.php");
   }
 
 ?>       

@@ -66,132 +66,77 @@
 <!-- Search part START-->
 <?php
 //search part start
-      $user_id = $table[5];
-      if(isset($_POST['advanced_search'])){
-        $sql_find_all = "SELECT *,house.id hid,house.name hname, people.name AS owner  FROM  `house` LEFT JOIN people ON owner_id = people.id LEFT JOIN favorite ON favorite_id = house.id AND user_id = $user_id " ;
-        $sql_find_all_by_info = "SELECT *,house.id hid,house.name hname, people.name AS owner , COUNT(house.id) FROM information AS info LEFT JOIN `house` ON info.house_id = house.id LEFT JOIN people ON owner_id = people.id LEFT JOIN favorite ON favorite_id = house.id AND user_id = $user_id " ;
-        //$people_rs = $db->query($sql_find_all);
-        $sql_find_require = "";
-        if(!empty($_POST['id'])){
-          //echo "id = $_POST[id] \n";
-          $sql_find_require .= " house.id = '$_POST[id]' "; 
-        }
-        if(!empty($_POST['name'])){
-          if(!empty($sql_find_require)){$sql_find_require .= " AND "; }
-          //echo "name = $_POST[name] \n" ;
-          $sql_find_require .= " house.name = \"$_POST[name]\" "; 
-        }
-        if(!empty($_POST['price'])){
-          if(!empty($sql_find_require)){$sql_find_require .= " AND "; }
-          //echo "price = $_POST[price] \n" ;
-          switch($_POST['price']){
-            case "1":
-              $sql_find_require .= " price <= 30000 ";
-              break;
-            case "2":
-              $sql_find_require .= " price <= 60000 AND price >= 30000 ";
-              break;
-            case "3":
-              $sql_find_require .= " price <= 120000 AND price >= 60000 ";
-              break;
-            case "4":
-              $sql_find_require .= " price >= 120000 ";
+    $user_id = $table[5];
+    $num_to_require = array('id', 'name', 'location', 'time');
+    $require = "";
+//select num_to_require part start
+    for($i = 0;$i < 4;$i++){
+      if(!empty($_POST[$num_to_require[$i]])){
+        $condition_left = $num_to_require[$i];
+        $condition_right = $_POST[$condition_left];
+        $require .= " AND h.$condition_left = '$condition_right'";
+      }
+    }
+//select num_to_require part end
+
+//select price part start
+    if(!empty($_POST['price'])){
+      switch($_POST['price']){
+        case "1":
+          $require .= " AND price <= 30000";
+          break;
+        case "2":
+          $require .= " AND price <= 60000 AND price >= 30000";
+          break;
+        case "3":
+          $require .= " AND price <= 120000 AND price >= 60000";
+          break;
+        case "4":
+          $require .= " AND price >= 120000";
+      }
+    }
+    if(!empty($_POST['owner'])){
+      $require .= " AND p.name = '$_POST[owner]'";
+    }
+//select price part end
+
+//select information part start    
+    $info_require = "";
+    if(isset($_POST['information'])){
+      foreach($_POST['information'] as $info_id){
+        if($info_id == 10){
+          for($i = 0;$i < 10;$i++){
+            $info_require .= " OR info.information = \"$num_to_info[$i]\"";
           }
+          break;
         }
-        if(!empty($_POST['location'])){
-          if(!empty($sql_find_require)){$sql_find_require .= " AND "; }
-          //echo "location = $_POST[location] \n"  ;
-          $sql_find_require .= " location = \"$_POST[location]\" "; 
-        }     
-        if(!empty($_POST['time'])){
-          if(!empty($sql_find_require)){$sql_find_require .= " AND "; }
-          //echo "time = $_POST[time] \n"  ;
-          $sql_find_require .= " time = '$_POST[time]' "; 
-         } 
-        if(!empty($_POST['owner'])){
-          if(!empty($sql_find_require)){$sql_find_require .= " AND "; }
-          //echo "owner = $_POST[owner] \n"  ;
-          $sql_find_require .= " people.name = \"$_POST[owner]\" "; 
-        }
-        if(isset($_POST['information'])){
-          if(!empty($sql_find_require)){$sql_find_require .= " AND ( "; }
-          else{$sql_find_require .= " ( ";}
-          foreach ($_POST['information'] as $infoid )
-          {
-            //echo "infoid = $infoid";
-            if(!empty($infoid!=$_POST['information'][0])){$sql_find_require .= " OR "; }
-            switch ($infoid){
-                case "0":
-                  $sql_find_require .= " 0=0 )";
-                  unset($_POST['information']);
-                  break 2;
-                case "1":
-                  $sql_find_require .= " info.information = \"laundry facilities\" ";
-                  break;
-                case "2":
-                  $sql_find_require .= " info.information = \"wifi\" ";
-                  break;
-                case "3":
-                  $sql_find_require .= " info.information = \"lockers\" ";
-                  break;
-                case "4":
-                  $sql_find_require .= " info.information = \"kitchen\" ";
-                  break;
-                case "5":
-                  $sql_find_require .= " info.information = \"elevator\" ";
-                  break;
-                case "6":
-                  $sql_find_require .= " info.information = \"no smoking\" ";
-                  break;
-                case "7":
-                  $sql_find_require .= " info.information = \"television\" ";
-                  break;
-                case "8":
-                  $sql_find_require .= " info.information = \"breakfast\" ";
-                  break;
-                case "9":
-                  $sql_find_require .= " info.information = \"toiletries provided\" ";
-                  break;
-                case "10":
-                  $sql_find_require .= " info.information = \"shuttle service\" ";
-                  break;
-            }
-          }
-          if(isset($_POST['information'])){
-          $sql_find_require .= ") GROUP BY house.id HAVING COUNT(house.id) = '" . count($_POST['information']) . "' " ;
-          }
-        }
-        //echo '<br>' ;
-        //echo "addup = $sql_find_require";
-        if(!empty($sql_find_require)){
-          if(isset($_POST['information'])){
-            $sql_find_all = $sql_find_all_by_info . " WHERE " . $sql_find_require;
-          }
-          else{
-            $sql_find_all .= " WHERE " . $sql_find_require ;
-          }
-        }
-        else{
-          $sql_find_all .= " GROUP BY house.id ";
-        }
-        if(isset($_POST['price_search'])){
-          $temp = $_POST['price_search'];
-          $sql_find_all .= "  ORDER BY price $temp ";
-        }
-        else if(isset($_POST['time_search'])){
-          $temp = $_POST['time_search'];
-          $sql_find_all .= "  ORDER BY time $temp";
-        }
-        else{
-          $sql_find_all .= "  ORDER BY house.id ASC";
-        }
-        //echo '<br>' . "last = '$sql_find_all'";
-        $people_rs = $db->prepare($sql_find_all);
-        $people_rs->execute();       
+        $info_require .= " OR info.information = \"$num_to_info[$info_id]\"";
+      }
+      $info_require = substr($info_require, 3);
+      if($info_id == 10){
+        $require .= " AND (" . $info_require . ") GROUP BY h.id HAVING COUNT(h.id) >= 0";
       }
       else{
-        $people_rs = show_house_all($db, $user_id);
-      }
+        $require .= " AND (" . $info_require . ") GROUP BY h.id HAVING COUNT(h.id) = '" . count($_POST['information']) . "'";
+      } 
+    }
+//select infomation part end
+
+//order part start
+    if(isset($_POST['price_search'])){
+      $require .= " ORDER BY price $_POST[price_search]";
+    }
+    else if(isset($_POST['time_search'])){
+      $require .= " ORDER BY time $_POST[time_search]";
+    }
+    else{
+      $require .= " ORDER BY h.id ASC";
+    }
+//order part end
+    if(substr($require, 0, 4) === " AND"){
+      $require = substr($require, 4);
+    }
+    $people_rs = show_house($db, $user_id, $require);
 //search part end
 ?>
 <!-- Search part END-->
@@ -232,18 +177,15 @@
               <td class="adjust">
                 <div id="infoselect" >
                   <select class="search" name="information[]" multiple="multiple">
-                    <option value="0" <?php check_post_multiselect("information","0"); ?>>-none-</option>
-                    <option value="1" <?php check_post_multiselect("information","1"); ?>>laundry facilities</option>
-                    <option value="2" <?php check_post_multiselect("information","2"); ?>>wifi</option>
-                    <option value="3" <?php check_post_multiselect("information","3"); ?>>lockers</option>
-                    <option value="4" <?php check_post_multiselect("information","4"); ?>>kitchen</option>
-                    <option value="5" <?php check_post_multiselect("information","5"); ?>>elevator</option>
-                    <option value="6" <?php check_post_multiselect("information","6"); ?>>no smoking</option>
-                    <option value="7" <?php check_post_multiselect("information","7"); ?>>television</option>
-                    <option value="8" <?php check_post_multiselect("information","8"); ?>>breakfast</option>
-                    <option value="9" <?php check_post_multiselect("information","9"); ?>>toiletries provided</option>
-                    <option value="10" <?php check_post_multiselect("information","10"); ?>>shuttle service</option>
-                  </select>
+ <?php
+    
+                  echo "<option value='10' ", check_post_multiselect('information','10') ,">-none-</option>";
+                  for($i = 0;$i < 10;$i++){
+                    $tmp_str = $num_to_info[$i];
+                    echo "<option value='$i' ", check_post_multiselect('information',$i) ,">$tmp_str</option>";
+                  }
+?>
+                 </select>
                 </div>
               </td>
               <td class="adjust">
