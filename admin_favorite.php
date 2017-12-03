@@ -22,10 +22,6 @@
         store_post_as_session('regist_is_admin', 'is_admin');
         store_post_as_session('regist_name', 'name');
         store_post_as_session('regist_email', 'email');
-        /*$_SESSION['regist_account']=$_POST['account'];//for reinput's value
-        $_SESSION['regist_is_admin']=$_POST['is_admin'];
-        $_SESSION['regist_name']=$_POST['name'];
-        $_SESSION['regist_email']=$_POST['email'];*/
 
         $needto_reinput = 0;
 

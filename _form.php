@@ -270,21 +270,17 @@
     }
   }
   
-  function show_house($db, $user_id, $require){
-    $sql_find_all = "SELECT h.id hid, h.name hname, price, location, time, owner_id, p.name owner, user_id FROM house AS h LEFT JOIN people AS p ON owner_id = p.id LEFT JOIN favorite ON favorite_id = h.id AND user_id = $user_id " ;
-    $sql_find_all_by_info = "SELECT h.id hid, h.name hname, price, location, time, owner_id, p.name owner, user_id, COUNT(h.id) FROM information AS info LEFT JOIN house AS h ON info.house_id = h.id LEFT JOIN people AS p ON owner_id = p.id LEFT JOIN favorite ON favorite_id = h.id AND user_id = $user_id " ;
+  function show_house($db, $user_id, $require, $require_info_num, $require_order, $array_for_execute){
+    $sql_find_house = "SELECT h.id hid, h.name hname, price, location, time, owner_id, p.name owner, user_id, COUNT(h.id) FROM information AS info LEFT JOIN house AS h ON info.house_id = h.id LEFT JOIN people AS p ON owner_id = p.id LEFT JOIN favorite ON favorite_id = h.id AND user_id = $user_id " ;
 
-    if(substr($require, 0, 6) === " ORDER"){
-      $sql_find_all .=  $require ;
+    if($require != ""){
+      $sql_find_house .= " WHERE " . $require;
     }
-    else{
-      $sql_find_all = $sql_find_all_by_info . " WHERE " . $require;
-    }
-    echo "<div><p>$sql_find_all</p></div>";
-    $people_rs = $db->prepare($sql_find_all);
-    $people_rs->execute();       
+    $sql_find_house .= " GROUP BY h.id HAVING COUNT(h.id) >= $require_info_num" . $require_order;
+    //echo "<div><p>$sql_find_house</p></div>";
+    $people_rs = $db->prepare($sql_find_house);
+    //print_r($array_for_execute);
+    $people_rs->execute($array_for_execute);       
     return $people_rs;
   }
-
-
 ?>

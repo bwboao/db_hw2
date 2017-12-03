@@ -69,12 +69,15 @@
     $user_id = $table[5];
     $num_to_require = array('id', 'name', 'location', 'time');
     $require = "";
+    $array_for_execute = array();
 //select num_to_require part start
     for($i = 0;$i < 4;$i++){
       if(!empty($_POST[$num_to_require[$i]])){
         $condition_left = $num_to_require[$i];
         $condition_right = $_POST[$condition_left];
-        $require .= " AND h.$condition_left = '$condition_right'";
+        $condition_count = "condition_right" . "$i";
+        $array_for_execute[$condition_count] = $condition_right;
+        $require .= " AND h.$condition_left = :$condition_count";
       }
     }
 //select num_to_require part end
@@ -96,47 +99,48 @@
       }
     }
     if(!empty($_POST['owner'])){
-      $require .= " AND p.name = '$_POST[owner]'";
+      $require .= " AND p.name = :owner";
+      $array_for_execute['owner'] = $_POST['owner'];
+      //$require .= " AND p.name = '$_POST[owner]'";
     }
 //select price part end
 
 //select information part start    
-    $info_require = "";
+    $require_info = "";
+    $require_info_num = 0;
     if(isset($_POST['information'])){
       foreach($_POST['information'] as $info_id){
         if($info_id == 10){
           for($i = 0;$i < 10;$i++){
-            $info_require .= " OR info.information = \"$num_to_info[$i]\"";
+            $require_info .= " OR info.information = \"$num_to_info[$i]\"";
           }
           break;
         }
-        $info_require .= " OR info.information = \"$num_to_info[$info_id]\"";
+        $require_info .= " OR info.information = \"$num_to_info[$info_id]\"";
       }
-      $info_require = substr($info_require, 3);
-      if($info_id == 10){
-        $require .= " AND (" . $info_require . ") GROUP BY h.id HAVING COUNT(h.id) >= 0";
-      }
-      else{
-        $require .= " AND (" . $info_require . ") GROUP BY h.id HAVING COUNT(h.id) = '" . count($_POST['information']) . "'";
+      $require_info = substr($require_info, 3);
+      if($info_id != 10){
+        $require_info_num = count($_POST['information']);
       } 
+      $require .= " AND (" . $require_info . ")";
     }
 //select infomation part end
 
 //order part start
     if(isset($_POST['price_search'])){
-      $require .= " ORDER BY price $_POST[price_search]";
+      $require_order = " ORDER BY price $_POST[price_search]";
     }
     else if(isset($_POST['time_search'])){
-      $require .= " ORDER BY time $_POST[time_search]";
+      $require_order = " ORDER BY time $_POST[time_search]";
     }
     else{
-      $require .= " ORDER BY h.id ASC";
+      $require_order = " ORDER BY h.id ASC";
     }
 //order part end
     if(substr($require, 0, 4) === " AND"){
       $require = substr($require, 4);
     }
-    $people_rs = show_house($db, $user_id, $require);
+    $people_rs = show_house($db, $user_id, $require, $require_info_num, $require_order, $array_for_execute);
 //search part end
 ?>
 <!-- Search part END-->
