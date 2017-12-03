@@ -111,21 +111,7 @@
           $account_table=find_account($db,$account);
           $account_id=$account_table[5];
           unset_session('button_delete_account');
-
-          $sql="SELECT house.id FROM house WHERE owner_id=$account_id";
-          //echo $sql . "\n";
-          $rs=$db->query($sql);
-          //echo $rs;
-          //print_r($rs);
-          while($hid=$rs->fetchObject()){
-          print_r($hid);
-            delete_house($db,$hid->id);
-          }
-          $sql="DELETE FROM people WHERE account='$account'";
-          $rs=$db->prepare($sql);
-          $rs->execute();
-          $sql="DELETE FROM favorite WHERE user_id='$account_id'";
-          $db->query($sql);
+          delete_account($db, $account_id);
           print_p_with_div("notice", "finish delete", 1, "admin_user.php");
         }
         else{

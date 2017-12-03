@@ -4,7 +4,7 @@
 <?php
   include("connect_database.php");
   $info_to_num = array('laundry facilities' => 0, 'wifi' => 1, 'lockers' => 2, 'kitchen' => 3, 'elevator' => 4, 'no smoking' => 5, 'television' => 6, 'breakfast' => 7, 'toiletries provided' => 8, 'shuttle service' => 9);
-  $num_to_info = array('laundry facilities', 'wifi', 'lockers', "kitchen", 'elevator', 'no smoking', 'television', 'breakfast', 'toiletries provided', 'shuttle service');
+  $num_to_info = array('laundry facilities', 'wifi', 'lockers', 'kitchen', 'elevator', 'no smoking', 'television', 'breakfast', 'toiletries provided', 'shuttle service');
 
 
   if(session_status() == PHP_SESSION_NONE){
@@ -72,6 +72,19 @@
     $rs->execute(array('account' => $account, 'hash_password' => $hash_password, 'is_admin' => $is_admin, 'name' => $name, 'email' => $email));
   }
 
+  function delete_account($db, $account_id){
+    $sql_find_house="SELECT house.id FROM house WHERE owner_id=$account_id";
+    $rs=$db->query($sql);
+    while($house_id=$rs->fetchObject()){
+      delete_house($db,$house_id->id);
+    }
+    $sql_delete_account="DELETE FROM people WHERE account='$account'";
+    $rs=$db->prepare($sql_delete_account);
+    $rs->execute();
+    $sql_delete_favorite="DELETE FROM favorite WHERE user_id='$account_id'";
+    $db->query($sql_delete_favorite);
+  }
+
   function find_house($db, $house_id){
     $sql_find_house = "SELECT * FROM house WHERE id=:house_id";
     $rs = $db->prepare($sql_find_house);
@@ -81,15 +94,24 @@
   }
 
   function delete_house($db, $house_id){
-    $sql_delete_house="DELETE FROM  house WHERE id = $house_id;DELETE FROM favorite WHERE favorite_id = $house_id;DELETE FROM information WHERE house_id = $house_id";
-    $rs=$db->query($sql_delete_house);
-    //$db->query($sql_delete_house);
+    $sql_delete_house="DELETE FROM house WHERE id = $house_id;DELETE FROM favorite WHERE favorite_id = $house_id;DELETE FROM information WHERE house_id = $house_id";
+    $db->query($sql_delete_house);
   }
 
   function favorite_house($db, $user_id, $house_id){
     $sql_favorite_house="INSERT INTO favorite (id , user_id , favorite_id) VALUES (NULL , $user_id , $house_id)";
-    $rs=$db->query($sql_favorite_house);
-    //$rs->query($sql_favorite_house);
+    $db->query($sql_favorite_house);
+  }
+
+  function check_favorite_house($db, $user_id, $house_id){
+    $sql_favorite_house="SELECT * FROM favorite WHERE user_id = $user_id AND favorite_id = $house_id";
+    $rs = $db->query($sql_favorite_house);
+    if($rs == NULL){
+      return 0;
+    }
+    else{
+      return 1;
+    }
   }
 
   function show_house_all($db, $user_id){
@@ -113,7 +135,6 @@
       return $values;
     }
     while($info = $rs->fetchObject()){
-      //echo $info->information . "<br>" . $info_to_num[$info->information] . "<br>";
       $values[$info_to_num[$info->information]] = 1;
     }
     return $values;
@@ -131,7 +152,6 @@
     $sql_create_house = "INSERT INTO house (id, name, price, location, time, owner_id) VALUES (NULL, :create_name, :create_price, :create_location, :time, :owner_id)";
     $rs = $db->prepare($sql_create_house);
     $rs->execute(array('create_name' => $create_name, 'create_price' => $create_price, 'create_location' => $create_location, 'time' => $time, 'owner_id' => $owner_id)); 
-
   }
 
   function delete_info($db ,$house_id, $info){
@@ -142,8 +162,6 @@
   
   function create_info($db ,$house_id, $info){
     $sql_create_info = "INSERT INTO information (id, house_id, information) VALUES (NULL, $house_id, '$info')";
-    $sql_create_info = "INSERT INTO information (id, house_id, information) VALUES (NULL, $house_id, \"$info\")";
-    //echo "<br>" . $sql_create_info;
     $db->query($sql_create_info);
  }
 
@@ -160,9 +178,7 @@
         }
       }
     }   
- 
   }
-
 
   function button_with_form($post_to, $name, $value, $button_name){
     echo "<form method='post' action=$post_to>";
@@ -252,5 +268,19 @@
         echo " selected = \"true\" ";
       }
     }
+  }
+  
+  function show_house($db, $user_id, $require, $require_info_num, $require_order, $array_for_execute){
+    $sql_find_house = "SELECT h.id hid, h.name hname, price, location, time, owner_id, p.name owner, user_id, COUNT(h.id) FROM information AS info LEFT JOIN house AS h ON info.house_id = h.id LEFT JOIN people AS p ON owner_id = p.id LEFT JOIN favorite ON favorite_id = h.id AND user_id = $user_id " ;
+
+    if($require != ""){
+      $sql_find_house .= " WHERE " . $require;
+    }
+    $sql_find_house .= " GROUP BY h.id HAVING COUNT(h.id) >= $require_info_num" . $require_order;
+    //echo "<div><p>$sql_find_house</p></div>";
+    $people_rs = $db->prepare($sql_find_house);
+    //print_r($array_for_execute);
+    $people_rs->execute($array_for_execute);       
+    return $people_rs;
   }
 ?>
