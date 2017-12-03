@@ -21,7 +21,7 @@
 }
 @media screen and (min-width:480px) {
 *{
-  box-sizing:border-box;
+  //box-sizing:border-box;
   font-family: 'Noto Sans TC','Arimo', sans-serif;
   font-weight: 300;
 }

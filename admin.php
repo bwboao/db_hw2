@@ -266,7 +266,7 @@
          <td class="adjust">
             <form method="post" action="admin.php">
             <input type="hidden" name="button_favorite_house" value="<?php echo $table->hid; ?>" <?php if($table->user_id != NULL){ echo "disabled"; } ?>>
-              <input class="adjust" value="<?php if($table->user_id != NULL) {echo "已在我的最愛內";}else{echo "favorite""} ?>" type="submit" <?php if($table->user_id != NULL) {echo "disabled";} ?> >
+              <input class="adjust" value="<?php if($table->user_id != NULL) {echo "已在我的最愛內";}else{echo "favorite";} ?>" type="submit" <?php if($table->user_id != NULL) {echo "disabled";} ?> >
             </form>
             <form method="post" action="admin.php">
               <input type="hidden" name="button_delete_house" value="<?php echo $table->hid; ?>">
