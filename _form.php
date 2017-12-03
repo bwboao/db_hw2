@@ -1,5 +1,7 @@
 <link rel="stylesheet" href="all.css">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css?family=Arimo" rel="stylesheet" >
+<link href="https://fonts.googleapis.com/earlyaccess/notosanstc.css" rel="stylesheet" >
 
 <?php
   include("connect_database.php");

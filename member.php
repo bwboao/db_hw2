@@ -86,16 +86,16 @@
     if(!empty($_POST['price'])){
       switch($_POST['price']){
         case "1":
-          $require .= " AND price <= 30000";
+          $require .= " AND price <= 300";
           break;
         case "2":
-          $require .= " AND price <= 60000 AND price >= 30000";
+          $require .= " AND price <= 600 AND price >= 300";
           break;
         case "3":
-          $require .= " AND price <= 120000 AND price >= 60000";
+          $require .= " AND price <= 1200 AND price >= 600";
           break;
         case "4":
-          $require .= " AND price >= 120000";
+          $require .= " AND price >= 1200";
       }
     }
     if(!empty($_POST['owner'])){
@@ -163,10 +163,10 @@
               <td class="adjust">
                 <select class="search" name="price"  placeholder="keywords" >
                   <option value="0" <?php check_post_select("price", "0"); ?>>--</option>
-                  <option value="1" <?php check_post_select("price", "1"); ?>>0 ~ 30,000</option>
-                  <option value="2" <?php check_post_select("price", "2"); ?>>30,000 ~ 60,000</option>
-                  <option value="3" <?php check_post_select("price", "3"); ?>>60,000 ~ 120,000</option>
-                  <option value="4" <?php check_post_select("price", "4"); ?>>120,000 ~</option>
+                  <option value="1" <?php check_post_select("price", "1"); ?>>0 ~ 300</option>
+                  <option value="2" <?php check_post_select("price", "2"); ?>>300 ~ 600</option>
+                  <option value="3" <?php check_post_select("price", "3"); ?>>600 ~ 1200</option>
+                  <option value="4" <?php check_post_select("price", "4"); ?>>1200 ~</option>
                 </select>
               </td>
               <td class="adjust">
@@ -259,7 +259,7 @@
            <td class="adjust">
               <form method="post" action="member.php">
               <input type="hidden" name="button_favorite_house" value="<?php echo $table->hid; ?>" <?php if($table->user_id != NULL){ echo "disabled"; } ?>>
-                <input class="adjust" value="favorite" type="submit" <?php if($table->user_id != NULL) {echo "disabled";} ?> >
+                <input class="adjust" value="<?php if($table->user_id == NULL){ echo "favorite"; }else{echo "已在我的最愛內";} ?>" type="submit" <?php if($table->user_id != NULL) {echo "disabled";} ?> >
               </form>
             </td>
           </tr>

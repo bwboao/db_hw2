@@ -20,11 +20,13 @@
 
 }
 @media screen and (min-width:480px) {
-.{
+*{
   box-sizing:border-box;
+  font-family: 'Noto Sans TC','Arimo', sans-serif;
+  font-weight: 300;
 }
 body{
-	text-align:center;
+  text-align:center;
   background-color:rgba(33,33,33,0.1);
   margin:0px
 }
